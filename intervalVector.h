@@ -623,16 +623,9 @@ public:
         int normalizedAxisIndex = div.remainder;
         int axisValue = data[normalizedAxisIndex];
         
-        vector<int> result(data.size());
-        for (size_t i = 0; i < data.size(); ++i) {
-            result[i] = (axisValue * 2) - data[i];
-        }
+        IntervalVector result = (axisValue * 2) - (*this);
         
-        if (sortOutput) {
-            sort(result.begin(), result.end());
-        }
-        
-        return IntervalVector(result, offset, mod);
+        return result;
     }
 
     /**
@@ -1062,7 +1055,106 @@ public:
         }
         return IntervalVector(result, offset, mod);
     }
+// ==================== METODI DI MIRRORING ====================
 
+    /**
+     * @brief Riflette singolarmente gli elementi a sinistra o destra di una posizione
+     * 
+     * @param position Posizione attorno alla quale avviene la riflessione
+     * @param left Se true, riflette elementi a sinistra; se false, a destra
+     * @return Nuovo IntervalVector con elementi riflessi
+     * 
+     * @details Se left=true: riflette gli elementi fino a position verso l'interno.
+     *          Se left=false: riflette gli elementi da position alla fine verso l'esterno.
+     *          Crea un pattern riflette attorno a una posizione in una direzione.
+     * 
+     * @note Se position è fuori range [0, size], ritorna una copia inalterata
+     */
+    IntervalVector singleMirror(int position, bool left) const {
+        vector<int> out = data;
+        int length = static_cast<int>(out.size());
+
+        if (position < 0 || position > length) {
+            return *this;
+        }
+
+        if (left) {
+            for (int i = 0; i < position / 2; i++) {
+                swap(out[i], out[position - 1 - i]);
+            }
+        } else {
+            int end = position + (length - position) / 2;
+            for (int i = position; i < end; i++) {
+                swap(out[i], out[length - 1 - (i - position)]);
+            }
+        }
+
+        return IntervalVector(out, offset, mod);
+    }
+
+    /**
+     * @brief Riflette in due direzioni attorno a una posizione centrale
+     * 
+     * @param position Posizione centrale attorno alla quale avvengono le riflessioni
+     * @return Nuovo IntervalVector con elementi riflessi simmetricamente
+     * 
+     * @details Prima riflette gli elementi fino a position verso l'interno.
+     *          Poi riflette gli elementi dopo position verso l'esterno.
+     *          Crea un pattern simmetrico attorno alla posizione in entrambe le direzioni.
+     * 
+     * @note Se position è fuori range [0, size], ritorna una copia inalterata
+     */
+    IntervalVector doubleMirror(int position) const {
+        vector<int> out = data;
+        int length = static_cast<int>(out.size());
+
+        if (position < 0 || position > length) {
+            return *this;
+        }
+
+        // Specchia la parte sinistra (fino a position)
+        for (int i = 0; i < position / 2; i++) {
+            swap(out[i], out[position - 1 - i]);
+        }
+
+        // Specchia la parte destra (da position alla fine)
+        int end = position + (length - position) / 2;
+        for (int i = position; i < end; i++) {
+            swap(out[i], out[length - 1 - (i - position)]);
+        }
+
+        return IntervalVector(out, offset, mod);
+    }
+
+    /**
+     * @brief Riflette elementi dal lato opposto di una posizione
+     * 
+     * @param position Posizione centrale attorno alla quale avviene la riflessione
+     * @param left Se true, riflette elementi da sinistra a destra; se false, da destra a sinistra
+     * @return Nuovo IntervalVector con elementi riflessi dal lato opposto
+     * 
+     * @details Se left=true: riflette elementi dalla sezione sinistra (fino a pos) verso la fine destra.
+     *          Se left=false: riflette elementi dalla sezione destra (da pos in poi) verso l'inizio.
+     *          Crea una riflessione attraverso la posizione da un lato all'altro.
+     * 
+     * @note Se position è fuori range, ritorna una copia inalterata
+     */
+    IntervalVector crossMirror(int position, bool left) const {
+        vector<int> out = data;
+        int n = static_cast<int>(data.size());
+
+        if (left) {
+            for (int i = 0; i < position && i < n; i++) {
+                out[n - 1 - i] = data[i];
+            }
+        } else {
+            for (int i = position; i < n; i++) {
+                out[i - position] = data[n - 1 - (i - position)];
+            }
+        }
+
+        return IntervalVector(out, offset, mod);
+    }
     // ==================== METODI DI DEBUG/OUTPUT ====================
 
     /**
