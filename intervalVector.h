@@ -502,11 +502,7 @@ public:
      * @return Nuovo IntervalVector con scalar - elementi
      */
     friend IntervalVector operator-(int scalar, const IntervalVector& iv) {
-        vector<int> result(iv.data.size());
-        for (size_t i = 0; i < iv.data.size(); ++i) {
-            result[i] = scalar - iv.data[i];
-        }
-        return IntervalVector(result, iv.offset, iv.mod);
+        return iv - scalar;
     }
 
     /**
@@ -602,30 +598,45 @@ public:
     }
 
     /**
-     * @brief Inversione rispetto a un asse specificato
+     * @brief Inversione: riflette la sequenza rispetto a un asse
      * 
-     * @param axisIndex Indice dell'elemento da usare come asse (con wraparound)
-     * @param sortOutput Se true, ordina il risultato
-     * @return Nuovo IntervalVector invertito rispetto all'asse
+     * @param axisIndex Posizione dell'asse di riflessione (0 = inizio, size = fine)
+     * @return Nuovo IntervalVector con elementi riflessi rispetto all'asse
      * 
-     * @details Inverte tutti gli elementi rispetto al valore dell'elemento all'indice axisIndex.
-     *          Formula: result = 2 * axis_value - original_value
-     * 
-     * @note Se il vettore è vuoto, ritorna se stesso
+     * @details Riflette l'ordine degli elementi rispetto a una posizione.
+     *          Gli elementi prima dell'asse vengono invertiti di ordine,
+     *          e anche gli elementi dopo l'asse vengono invertiti di ordine.
+     *          
+     *          Esempio con [2, 2, 1]:
+     *          - axisIndex=0: [2, 2, 1] (nessun elemento prima dell'asse)
+     *          - axisIndex=1: [2, 2, 1] (1 elemento prima, invertito con se stesso)
+     *          - axisIndex=2: [1, 2, 2] (2 elementi prima vengono scambiati)
      */
-    IntervalVector inversion(int axisIndex, bool sortOutput = false) const {
+    IntervalVector inversion(int axisIndex = 0) const {
         if (data.empty()) {
             return *this;
         }
 
         int size = static_cast<int>(data.size());
-        DivisionResult div = euclideanDivision(axisIndex, size);
-        int normalizedAxisIndex = div.remainder;
-        int axisValue = data[normalizedAxisIndex];
+        DivisionResult div = euclideanDivision(axisIndex, size + 1);
+        int normalizedAxis = div.remainder;
         
-        IntervalVector result = (axisValue * 2) - (*this);
+        vector<int> result = data;
         
-        return result;
+        // Inverti gli elementi prima dell'asse
+        for (int i = 0; i < normalizedAxis / 2; ++i) {
+            swap(result[i], result[normalizedAxis - 1 - i]);
+        }
+        
+        // Inverti gli elementi dopo l'asse
+        int start = normalizedAxis;
+        int end = size;
+        int len = end - start;
+        for (int i = 0; i < len / 2; ++i) {
+            swap(result[start + i], result[end - 1 - i]);
+        }
+        
+        return IntervalVector(result, offset, mod);
     }
 
     /**
@@ -1055,7 +1066,7 @@ public:
         }
         return IntervalVector(result, offset, mod);
     }
-// ==================== METODI DI MIRRORING ====================
+    // ==================== METODI DI MIRRORING ====================
 
     /**
      * @brief Riflette singolarmente gli elementi a sinistra o destra di una posizione
@@ -1155,6 +1166,8 @@ public:
 
         return IntervalVector(out, offset, mod);
     }
+
+
     // ==================== METODI DI DEBUG/OUTPUT ====================
 
     /**

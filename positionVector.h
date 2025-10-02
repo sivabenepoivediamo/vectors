@@ -605,11 +605,7 @@ public:
      * @return Nuovo PositionVector con scalar - elementi
      */
     friend PositionVector operator-(int scalar, const PositionVector& pv) {
-        vector<int> result(pv.data.size());
-        for (size_t i = 0; i < pv.data.size(); ++i) {
-            result[i] = scalar - pv.data[i];
-        }
-        return PositionVector(result, pv.mod, pv.userRange, pv.rangeUpdate, pv.user);
+        return pv - scalar;
     }
 
     /**
@@ -933,16 +929,21 @@ public:
             return *this;
         }
 
+        vector<int> invertedData(data.size());
         int size = static_cast<int>(data.size());
+        
+        // Normalizza l'indice dell'asse
         int normalizedAxisIndex = euclideanDivision(axisIndex, size).remainder;
-        int axisValue = (*this)[normalizedAxisIndex];
+        int axisValue = data[normalizedAxisIndex];
         
-        PositionVector result = (axisValue * 2) - (*this);
-        
-        if(sortOutput) {
-            sort(result.data.begin(), result.data.end());
+        // Applica l'inversione a tutti gli elementi
+        for (size_t i = 0; i < data.size(); ++i) {
+            invertedData[i] = 2 * axisValue - data[i];
         }
-        return result;
+        if(sortOutput) {
+            sort(invertedData.begin(), invertedData.end());
+        }
+        return PositionVector(invertedData, mod, userRange, rangeUpdate, user);
     }
 
     /**
@@ -962,22 +963,45 @@ public:
         PositionVector result = *this;
         int adjustedPosition = axis;
         
+        // Step 1: Raddoppio (se richiesto)
         if (standard) {
-            result *= 2;
+            for (int& elem : result.data) {
+                elem *= 2;
+            }
             adjustedPosition = (axis * 2) - 1;
         }
         
-        result = adjustedPosition - (result - adjustedPosition);
-        
-        if (standard) {
-            result /= 2;
+        // Step 2: Sottrazione della posizione di riferimento
+        for (int& elem : result.data) {
+            elem -= adjustedPosition;
         }
         
+        // Step 3: Negazione
+        for (int& elem : result.data) {
+            elem *= -1;
+        }
+        
+        // Step 4: Aggiunta della posizione di riferimento
+        for (int& elem : result.data) {
+            elem += adjustedPosition;
+        }
+        
+        // Step 5: Divisione per 2 (se richiesto)
+        if (standard) {
+            for (int& elem : result.data) {
+                elem /= 2;
+            }
+        }
+        
+        // Step 6: Ordinamento (se richiesto)
         if (sortResult) {
             sort(result.data.begin(), result.data.end());
         }
         
-        return result.rotoTranslate(-1);
+        // Step 7: Roto-traslazione finale
+        result = result.rotoTranslate(-1);
+        
+        return result;
     }
 
     // ==================== OPERAZIONI COMPONENTE PER COMPONENTE ====================
