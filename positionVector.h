@@ -924,7 +924,7 @@ public:
      * 
      * @note Se il vettore è vuoto, ritorna se stesso
      */
-    PositionVector inversion(int axisIndex, bool sortOutput = false) const {
+    PositionVector inversion(int axisIndex, bool sortOutput = true) const {
         if (data.empty()) {
             return *this;
         }

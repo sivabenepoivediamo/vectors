@@ -118,25 +118,60 @@ public:
         return BinaryVector(result, offset, mod * scalar);
     }
 
-    /**
-     * @brief Divide (compress) the pattern by a scalar
-     * @param divisor Compression factor
-     * @return New BinaryVector with pattern compressed
-     * @details Keeps every 'divisor'-th element
-     */
-    BinaryVector operator/(int divisor) const {
-        if (divisor <= 0) {
-            throw invalid_argument("Divisor must be positive");
-        }
-
-        vector<int> result;
-        for (size_t i = 0; i < data.size(); i += divisor) {
-            result.push_back(data[i]);
-        }
-
-        return BinaryVector(result, offset, (mod + divisor - 1) / divisor);
+ /**
+ * @brief Divide (compress spacing) the pattern by a scalar
+ * @param divisor Compression factor
+ * @return New BinaryVector with spacing between pulses compressed
+ * @details Compresses the spaces between 1s by removing zeros proportionally.
+ * For each gap between pulses, keeps only 1/divisor of the zeros (rounded down).
+ * Result is padded with zeros to maintain original length and modulo.
+ * This is the inverse operation of multiplication.
+ */
+BinaryVector operator/(int divisor) const {
+    if (divisor <= 0) {
+        throw invalid_argument("Divisor must be positive");
     }
-
+    
+    if (divisor == 1) {
+        return *this;
+    }
+    
+    vector<int> compressed;
+    int consecutiveZeros = 0;
+    
+    for (size_t i = 0; i < data.size(); ++i) {
+        if (data[i] == 1) {
+            // Output compressed zeros before this pulse
+            int compressedZeroCount = consecutiveZeros / divisor;
+            for (int j = 0; j < compressedZeroCount; ++j) {
+                compressed.push_back(0);
+            }
+            // Output the pulse
+            compressed.push_back(1);
+            consecutiveZeros = 0;
+        } else {
+            consecutiveZeros++;
+        }
+    }
+    
+    // Handle trailing zeros
+    int compressedTrailingZeros = consecutiveZeros / divisor;
+    for (int j = 0; j < compressedTrailingZeros; ++j) {
+        compressed.push_back(0);
+    }
+    
+    // Pad with zeros to maintain original length
+    while (compressed.size() < data.size()) {
+        compressed.push_back(0);
+    }
+    
+    // Truncate if somehow longer (shouldn't happen, but safety check)
+    if (compressed.size() > data.size()) {
+        compressed.resize(data.size());
+    }
+    
+    return BinaryVector(compressed, offset, mod);
+}
     BinaryVector& operator*=(int scalar) {
         *this = *this * scalar;
         return *this;

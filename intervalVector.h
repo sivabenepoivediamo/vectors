@@ -526,14 +526,14 @@ public:
      * @details Formato: [elem1, elem2, ..., elemN]
      */
     friend ostream& operator<<(ostream& os, const IntervalVector& iv) {
-        os << "[";
-        for (size_t i = 0; i < iv.data.size(); ++i) {
-            os << iv.data[i];
-            if (i < iv.data.size() - 1) os << ", ";
-        }
-        os << "]";
-        return os;
+    os << "[";
+    for (size_t i = 0; i < iv.data.size(); ++i) {
+        os << iv.data[i];
+        if (i < iv.data.size() - 1) os << ", ";
     }
+    os << "] (offset: " << iv.offset << ")";
+    return os;
+}
 
     // ==================== METODI PRINCIPALI ====================
 
