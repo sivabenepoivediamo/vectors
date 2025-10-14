@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Vectors.h"
+#include "../src/Vector.h"
 
 using namespace std;
 
@@ -22,7 +22,7 @@ int main() {
     printSeparator();
     
     // From intervals
-    cout << "B. From Interval Vector [4, 3]:" << endl;
+    cout << "B. From Interval Vector [4, 3, 5]:" << endl;
     Vectors fromIntervals = Vectors::fromIntervals({4, 3, 5});
     fromIntervals.printAll();
     
@@ -91,10 +91,6 @@ int main() {
     cout << "\nD. Reverse intervals:" << endl;
     Vectors reversed = majorTriad.reverseIntervals();
     reversed.printAll();
-    
-    cout << "\nE. Negate intervals:" << endl;
-    Vectors negated = majorTriad.negateIntervals();
-    negated.printAll();
     
     cout << "\nF. Invert intervals around axis 0:" << endl;
     Vectors intervalInverted = majorTriad.invertIntervals(0);
@@ -194,7 +190,7 @@ int main() {
     
 
     cout << "\nNegative:" << endl;
-    Vectors motifN = motif.negativePositions();
+    Vectors motifN = motif.negative();
     motifN.printPositions();
     cout << "\nInversion:" << endl;
     Vectors motifI = motif.invertPositions(0);

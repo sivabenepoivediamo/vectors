@@ -5,75 +5,75 @@
 
 /**
  * @file PositionVector.h
- * @brief Definizione della classe PositionVector per vettori posizionali ciclici
+ * @brief Definition of the PositionVector class for cyclic positional vectors
  * @author [not251]
  * @date 2025
  */
 
 /**
  * @class PositionVector
- * @brief Classe per rappresentare un vettore posizionale con comportamento ciclico
+ * @brief Class to represent a positional vector with cyclic behavior
  * 
- * @details Un PositionVector è un contenitore di interi che supporta:
- * - Accesso ciclico agli elementi (gli indici "wrappano" automaticamente)
- * - Scaling automatico per estensioni del range
- * - Operazioni matematiche vettoriali e scalari
- * - Operazioni geometriche specializzate (rotazione, inversione, complemento)
- * - Controllo flessibile del range utilizzato per i calcoli
+ * @details A PositionVector is a container of integers that supports:
+ * - Cyclic access to elements (indices automatically wrap around)
+ * - Automatic scaling for range extensions
+ * - Vector and scalar mathematical operations
+ * - Specialized geometric operations (rotation, inversion, complement)
+ * - Flexible control of the range used for calculations
  * 
- * Il vettore mantiene un modulo (mod) che definisce il periodo ciclico base.
- * Il range può essere calcolato automaticamente in base ai dati o impostato manualmente.
+ * The vector maintains a modulus (mod) that defines the base cyclic period.
+ * The range can be calculated automatically based on data or set manually.
  * 
- * @note Tutte le operazioni di divisione utilizzano la divisione euclidea per
- *       garantire risultati consistenti con numeri negativi.
+ * @note All division operations use Euclidean division to
+ *       ensure consistent results with negative numbers.
  */
 class PositionVector {
+public:
+    vector<int> data;        ///< Vector data
+    int mod;                 ///< Base modulus (cyclic period)
+    int userRange;           ///< User-defined range
+    int range;               ///< Effective range used in calculations
+    bool rangeUpdate;        ///< Flag for automatic range updating
+    bool user;               ///< Flag to use userRange instead of mod
 private:
-    vector<int> data;        ///< Dati del vettore
-    int mod;                 ///< Modulo base (periodo ciclico)
-    int userRange;           ///< Range definito dall'utente
-    int range;               ///< Range effettivo utilizzato nei calcoli
-    bool rangeUpdate;        ///< Flag per aggiornamento automatico del range
-    bool user;               ///< Flag per usare userRange invece di mod
-
     /**
-     * @brief Calcola il range necessario per contenere tutti i valori
+     * @brief Calculates the range needed to contain all values
      * 
-     * @details Determina il range minimo necessario basandosi sullo span dei dati
-     *          (differenza tra massimo e minimo) e sul modulo corrente.
-     *          Il range sarà un multiplo del modulo sufficiente a contenere tutti i valori.
+     * @details Determines the minimum necessary range based on the data span
+     *          (difference between maximum and minimum) and the current modulus.
+     *          The range will be a multiple of the modulus sufficient to contain all values.
      * 
-     * @return Range calcolato come multiplo del modulo
+     * @return Calculated range as a multiple of the modulus
      * 
-     * @note Se il vettore è vuoto, ritorna semplicemente il modulo di riferimento
+     * @note If the vector is empty, returns simply the reference modulus
      */
     int rangeCalculation() const {
         int modulo = user ? userRange : mod;
         
-        // Se non ci sono dati, il range è semplicemente il modulo
+        // If there's no data, the range is simply the modulus
         if (data.empty()) {
             return modulo;
         }
 
-        // Calcola lo span dei dati
+        // Calculate the data span
         int maxValue = *max_element(data.begin(), data.end());
         int minValue = *min_element(data.begin(), data.end());
         int span = maxValue - minValue;
         
-        // Determina quanti multipli del modulo sono necessari
+        // Determine how many multiples of the modulus are necessary
         DivisionResult result = euclideanDivision(span, modulo);
         
         return modulo * (result.quotient + 1);
     }
 
     /**
-     * @brief Helper per inizializzare il range appropriatamente
+     * @brief Helper to initialize the range appropriately
      * 
-     * @details Determina il valore iniziale del range basandosi su:
-     *          - Se rangeUpdate è attivo, calcola dinamicamente il range
-     *          - Altrimenti usa userRange o mod in base al flag user
+     * @details Determines the initial range value based on:
+     *          - If rangeUpdate is active, dynamically calculates the range
+     *          - Otherwise uses userRange or mod based on the user flag
      * 
-     * @return Valore iniziale del range
+     * @return Initial range value
      */
     int initializeRange() const {
         if (rangeUpdate) {
@@ -84,10 +84,10 @@ private:
     }
 
     /**
-     * @brief Aggiorna il range se l'aggiornamento automatico è attivo
+     * @brief Updates the range if automatic updating is active
      * 
-     * @details Centralizza la logica di aggiornamento del range utilizzata
-     *          da tutti i metodi che modificano i dati.
+     * @details Centralizes the range update logic used
+     *          by all methods that modify the data.
      */
     void updateRangeIfNeeded() {
         if (rangeUpdate) {
@@ -97,9 +97,9 @@ private:
 
 public:
     /**
-     * @brief Costruttore di default
+     * @brief Default constructor
      * 
-     * @details Crea un PositionVector con:
+     * @details Creates a PositionVector with:
      *          - data = {0}
      *          - mod = 12
      *          - userRange = 12
@@ -118,15 +118,15 @@ public:
     }
 
     /**
-     * @brief Costruttore parametrizzato
+     * @brief Parameterized constructor
      * 
-     * @param data Vettore di interi iniziale
-     * @param mod Modulo base (periodo ciclico), default 12
-     * @param userRange Range personalizzato, se 0 o negativo usa mod, default 0
-     * @param rangeUpdate Flag per aggiornamento automatico del range, default true
-     * @param user Flag per usare userRange invece di mod, default false
+     * @param data Initial integer vector
+     * @param mod Base modulus (cyclic period), default 12
+     * @param userRange Custom range, if 0 or negative uses mod, default 0
+     * @param rangeUpdate Flag for automatic range updating, default true
+     * @param user Flag to use userRange instead of mod, default false
      * 
-     * @note Se userRange è 0 o negativo, viene automaticamente impostato uguale a mod
+     * @note If userRange is 0 or negative, it's automatically set equal to mod
      */
     PositionVector(const vector<int>& data, 
                    int mod = 12, 
@@ -143,13 +143,13 @@ public:
         range = initializeRange();
     }
 
-    // ==================== OPERATORI SCALARI ====================
+    // ==================== SCALAR OPERATORS ====================
 
     /**
-     * @brief Somma uno scalare a tutti gli elementi
+     * @brief Adds a scalar to all elements
      * 
-     * @param scalar Valore da sommare
-     * @return Nuovo PositionVector con i valori sommati
+     * @param scalar Value to add
+     * @return New PositionVector with the added values
      */
     PositionVector operator+(int scalar) const {
         vector<int> result(data.size());
@@ -160,10 +160,10 @@ public:
     }
 
     /**
-     * @brief Sottrae uno scalare da tutti gli elementi
+     * @brief Subtracts a scalar from all elements
      * 
-     * @param scalar Valore da sottrarre
-     * @return Nuovo PositionVector con i valori sottratti
+     * @param scalar Value to subtract
+     * @return New PositionVector with the subtracted values
      */
     PositionVector operator-(int scalar) const {
         vector<int> result(data.size());
@@ -174,10 +174,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica tutti gli elementi per uno scalare
+     * @brief Multiplies all elements by a scalar
      * 
-     * @param scalar Fattore di moltiplicazione
-     * @return Nuovo PositionVector con i valori moltiplicati
+     * @param scalar Multiplication factor
+     * @return New PositionVector with the multiplied values
      */
     PositionVector operator*(int scalar) const {
         vector<int> result(data.size());
@@ -188,13 +188,13 @@ public:
     }
 
     /**
-     * @brief Divide tutti gli elementi per uno scalare (divisione euclidea)
+     * @brief Divides all elements by a scalar (Euclidean division)
      * 
-     * @param divisor Divisore
-     * @return Nuovo PositionVector con i quozienti
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return New PositionVector with the quotients
+     * @throw invalid_argument If divisor is 0
      * 
-     * @note Utilizza la divisione euclidea per garantire risultati consistenti
+     * @note Uses Euclidean division to guarantee consistent results
      */
     PositionVector operator/(int divisor) const {
         if (divisor == 0) {
@@ -210,11 +210,11 @@ public:
     }
 
     /**
-     * @brief Calcola il resto della divisione euclidea per tutti gli elementi
+     * @brief Calculates the remainder of Euclidean division for all elements
      * 
-     * @param divisor Divisore
-     * @return Nuovo PositionVector con i resti
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return New PositionVector with the remainders
+     * @throw invalid_argument If divisor is 0
      */
     PositionVector operator%(int divisor) const {
         if (divisor == 0) {
@@ -229,131 +229,131 @@ public:
         return PositionVector(result, mod, userRange, rangeUpdate, user);
     }
 
-    // ==================== OPERATORI VETTORIALI ====================
+    // ==================== VECTOR OPERATORS ====================
 
     /**
-     * @brief Somma componente per componente con un altro PositionVector
+     * @brief Component-wise addition with another PositionVector
      * 
-     * @param other PositionVector da sommare
-     * @return Nuovo PositionVector risultato della somma
+     * @param other PositionVector to add
+     * @return New PositionVector result of the addition
      * 
-     * @note Utilizza componentwiseSum senza looping
+     * @note Uses componentwiseSum without looping
      */
     PositionVector operator+(const PositionVector& other) const {
         return componentwiseSum(other.data, false);
     }
 
     /**
-     * @brief Sottrazione componente per componente con un altro PositionVector
+     * @brief Component-wise subtraction with another PositionVector
      * 
-     * @param other PositionVector da sottrarre
-     * @return Nuovo PositionVector risultato della sottrazione
+     * @param other PositionVector to subtract
+     * @return New PositionVector result of the subtraction
      * 
-     * @note Utilizza componentwiseSubtraction senza looping
+     * @note Uses componentwiseSubtraction without looping
      */
     PositionVector operator-(const PositionVector& other) const {
         return componentwiseSubtraction(other.data, false);
     }
 
     /**
-     * @brief Prodotto componente per componente con un altro PositionVector
+     * @brief Component-wise product with another PositionVector
      * 
-     * @param other PositionVector da moltiplicare
-     * @return Nuovo PositionVector risultato del prodotto
+     * @param other PositionVector to multiply
+     * @return New PositionVector result of the product
      * 
-     * @note Utilizza componentwiseProduct con looping
+     * @note Uses componentwiseProduct with looping
      */
     PositionVector operator*(const PositionVector& other) const {
         return componentwiseProduct(other.data, true);
     }
 
     /**
-     * @brief Divisione componente per componente con un altro PositionVector
+     * @brief Component-wise division with another PositionVector
      * 
-     * @param other PositionVector divisore
-     * @return Nuovo PositionVector con i quozienti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other PositionVector divisor
+     * @return New PositionVector with the quotients
+     * @throw invalid_argument If other contains zeros
      * 
-     * @note Utilizza componentwiseDivision con looping e divisione euclidea
+     * @note Uses componentwiseDivision with looping and Euclidean division
      */
     PositionVector operator/(const PositionVector& other) const {
         return componentwiseDivision(other.data, true);
     }
 
     /**
-     * @brief Modulo componente per componente con un altro PositionVector
+     * @brief Component-wise modulo with another PositionVector
      * 
-     * @param other PositionVector divisore
-     * @return Nuovo PositionVector con i resti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other PositionVector divisor
+     * @return New PositionVector with the remainders
+     * @throw invalid_argument If other contains zeros
      * 
-     * @note Utilizza componentwiseModulo con looping e divisione euclidea
+     * @note Uses componentwiseModulo with looping and Euclidean division
      */
     PositionVector operator%(const PositionVector& other) const {
         return componentwiseModulo(other.data, true);
     }
 
-    // ==================== OPERATORI CON VECTOR<INT> ====================
+    // ==================== OPERATORS WITH VECTOR<INT> ====================
 
     /**
-     * @brief Somma componente per componente con un vector<int>
+     * @brief Component-wise addition with a vector<int>
      * 
-     * @param other Vector da sommare
-     * @return Nuovo PositionVector risultato della somma
+     * @param other Vector to add
+     * @return New PositionVector result of the addition
      */
     PositionVector operator+(const vector<int>& other) const {
         return componentwiseSum(other, false);
     }
 
     /**
-     * @brief Sottrazione componente per componente con un vector<int>
+     * @brief Component-wise subtraction with a vector<int>
      * 
-     * @param other Vector da sottrarre
-     * @return Nuovo PositionVector risultato della sottrazione
+     * @param other Vector to subtract
+     * @return New PositionVector result of the subtraction
      */
     PositionVector operator-(const vector<int>& other) const {
         return componentwiseSubtraction(other, false);
     }
 
     /**
-     * @brief Prodotto componente per componente con un vector<int>
+     * @brief Component-wise product with a vector<int>
      * 
-     * @param other Vector da moltiplicare
-     * @return Nuovo PositionVector risultato del prodotto
+     * @param other Vector to multiply
+     * @return New PositionVector result of the product
      */
     PositionVector operator*(const vector<int>& other) const {
         return componentwiseProduct(other, true);
     }
 
     /**
-     * @brief Divisione componente per componente con un vector<int>
+     * @brief Component-wise division with a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Nuovo PositionVector con i quozienti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return New PositionVector with the quotients
+     * @throw invalid_argument If other contains zeros
      */
     PositionVector operator/(const vector<int>& other) const {
         return componentwiseDivision(other, true);
     }
 
     /**
-     * @brief Modulo componente per componente con un vector<int>
+     * @brief Component-wise modulo with a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Nuovo PositionVector con i resti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return New PositionVector with the remainders
+     * @throw invalid_argument If other contains zeros
      */
     PositionVector operator%(const vector<int>& other) const {
         return componentwiseModulo(other, true);
     }
 
-    // ==================== OPERATORI DI ASSEGNAZIONE COMPOSTA ====================
+    // ==================== COMPOUND ASSIGNMENT OPERATORS ====================
 
     /**
-     * @brief Somma e assegna uno scalare
+     * @brief Adds and assigns a scalar
      * 
-     * @param scalar Valore da sommare
-     * @return Riferimento a questo oggetto modificato
+     * @param scalar Value to add
+     * @return Reference to this modified object
      */
     PositionVector& operator+=(int scalar) {
         for (int& elem : data) {
@@ -364,10 +364,10 @@ public:
     }
 
     /**
-     * @brief Sottrae e assegna uno scalare
+     * @brief Subtracts and assigns a scalar
      * 
-     * @param scalar Valore da sottrarre
-     * @return Riferimento a questo oggetto modificato
+     * @param scalar Value to subtract
+     * @return Reference to this modified object
      */
     PositionVector& operator-=(int scalar) {
         for (int& elem : data) {
@@ -378,10 +378,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica e assegna uno scalare
+     * @brief Multiplies and assigns a scalar
      * 
-     * @param scalar Fattore di moltiplicazione
-     * @return Riferimento a questo oggetto modificato
+     * @param scalar Multiplication factor
+     * @return Reference to this modified object
      */
     PositionVector& operator*=(int scalar) {
         for (int& elem : data) {
@@ -392,11 +392,11 @@ public:
     }
 
     /**
-     * @brief Divide e assegna uno scalare
+     * @brief Divides and assigns a scalar
      * 
-     * @param divisor Divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If divisor is 0
      */
     PositionVector& operator/=(int divisor) {
         if (divisor == 0) {
@@ -412,11 +412,11 @@ public:
     }
 
     /**
-     * @brief Calcola il modulo e assegna
+     * @brief Calculates modulo and assigns
      * 
-     * @param divisor Divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If divisor is 0
      */
     PositionVector& operator%=(int divisor) {
         if (divisor == 0) {
@@ -432,10 +432,10 @@ public:
     }
 
     /**
-     * @brief Somma e assegna un altro PositionVector
+     * @brief Adds and assigns another PositionVector
      * 
-     * @param other PositionVector da sommare
-     * @return Riferimento a questo oggetto modificato
+     * @param other PositionVector to add
+     * @return Reference to this modified object
      */
     PositionVector& operator+=(const PositionVector& other) {
         *this = *this + other;
@@ -443,10 +443,10 @@ public:
     }
 
     /**
-     * @brief Sottrae e assegna un altro PositionVector
+     * @brief Subtracts and assigns another PositionVector
      * 
-     * @param other PositionVector da sottrarre
-     * @return Riferimento a questo oggetto modificato
+     * @param other PositionVector to subtract
+     * @return Reference to this modified object
      */
     PositionVector& operator-=(const PositionVector& other) {
         *this = *this - other;
@@ -454,10 +454,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica e assegna un altro PositionVector
+     * @brief Multiplies and assigns another PositionVector
      * 
-     * @param other PositionVector da moltiplicare
-     * @return Riferimento a questo oggetto modificato
+     * @param other PositionVector to multiply
+     * @return Reference to this modified object
      */
     PositionVector& operator*=(const PositionVector& other) {
         *this = *this * other;
@@ -465,11 +465,11 @@ public:
     }
 
     /**
-     * @brief Divide e assegna un altro PositionVector
+     * @brief Divides and assigns another PositionVector
      * 
-     * @param other PositionVector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other PositionVector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     PositionVector& operator/=(const PositionVector& other) {
         *this = *this / other;
@@ -477,11 +477,11 @@ public:
     }
 
     /**
-     * @brief Calcola il modulo e assegna con un altro PositionVector
+     * @brief Calculates modulo and assigns with another PositionVector
      * 
-     * @param other PositionVector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other PositionVector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     PositionVector& operator%=(const PositionVector& other) {
         *this = *this % other;
@@ -489,10 +489,10 @@ public:
     }
 
     /**
-     * @brief Somma e assegna un vector<int>
+     * @brief Adds and assigns a vector<int>
      * 
-     * @param other Vector da sommare
-     * @return Riferimento a questo oggetto modificato
+     * @param other Vector to add
+     * @return Reference to this modified object
      */
     PositionVector& operator+=(const vector<int>& other) {
         *this = *this + other;
@@ -500,10 +500,10 @@ public:
     }
 
     /**
-     * @brief Sottrae e assegna un vector<int>
+     * @brief Subtracts and assigns a vector<int>
      * 
-     * @param other Vector da sottrarre
-     * @return Riferimento a questo oggetto modificato
+     * @param other Vector to subtract
+     * @return Reference to this modified object
      */
     PositionVector& operator-=(const vector<int>& other) {
         *this = *this - other;
@@ -511,10 +511,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica e assegna un vector<int>
+     * @brief Multiplies and assigns a vector<int>
      * 
-     * @param other Vector da moltiplicare
-     * @return Riferimento a questo oggetto modificato
+     * @param other Vector to multiply
+     * @return Reference to this modified object
      */
     PositionVector& operator*=(const vector<int>& other) {
         *this = *this * other;
@@ -522,11 +522,11 @@ public:
     }
 
     /**
-     * @brief Divide e assegna un vector<int>
+     * @brief Divides and assigns a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     PositionVector& operator/=(const vector<int>& other) {
         *this = *this / other;
@@ -534,40 +534,40 @@ public:
     }
 
     /**
-     * @brief Calcola il modulo e assegna con un vector<int>
+     * @brief Calculates modulo and assigns with a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     PositionVector& operator%=(const vector<int>& other) {
         *this = *this % other;
         return *this;
     }
 
-    // ==================== OPERATORI DI ACCESSO E CONFRONTO ====================
+    // ==================== ACCESS AND COMPARISON OPERATORS ====================
 
     /**
-     * @brief Accesso ciclico agli elementi
+     * @brief Cyclic access to elements
      * 
-     * @param index Indice (può essere negativo o maggiore della dimensione)
-     * @return Valore all'indice specificato con wraparound ciclico
+     * @param index Index (can be negative or greater than size)
+     * @return Value at the specified index with cyclic wraparound
      * 
-     * @details Gli indici negativi accedono agli elementi dal fondo,
-     *          gli indici >= size wrappano ciclicamente.
-     *          Ogni ciclo completo aggiunge/sottrae il range effettivo.
+     * @details Negative indices access elements from the end,
+     *          indices >= size wrap cyclically.
+     *          Each complete cycle adds/subtracts the effective range.
      */
     int operator[](int index) const {
         return element(index);
     }
 
     /**
-     * @brief Operatore di uguaglianza
+     * @brief Equality operator
      * 
-     * @param other PositionVector da confrontare
-     * @return true se i vettori sono uguali, false altrimenti
+     * @param other PositionVector to compare
+     * @return true if the vectors are equal, false otherwise
      * 
-     * @note Confronta data, mod, userRange e user (non range o rangeUpdate)
+     * @note Compares data, mod, userRange and user (not range or rangeUpdate)
      */
     bool operator==(const PositionVector& other) const {
         return data == other.data && mod == other.mod && 
@@ -575,58 +575,58 @@ public:
     }
 
     /**
-     * @brief Operatore di disuguaglianza
+     * @brief Inequality operator
      * 
-     * @param other PositionVector da confrontare
-     * @return true se i vettori sono diversi, false altrimenti
+     * @param other PositionVector to compare
+     * @return true if the vectors are different, false otherwise
      */
     bool operator!=(const PositionVector& other) const {
         return !(*this == other);
     }
 
-    // ==================== OPERATORI FRIEND ====================
+    // ==================== FRIEND OPERATORS ====================
 
     /**
-     * @brief Somma scalare-vettore (friend)
+     * @brief Scalar-vector addition (friend)
      * 
-     * @param scalar Scalare a sinistra
-     * @param pv PositionVector a destra
-     * @return Nuovo PositionVector risultato della somma
+     * @param scalar Scalar on the left
+     * @param pv PositionVector on the right
+     * @return New PositionVector result of the addition
      */
     friend PositionVector operator+(int scalar, const PositionVector& pv) {
         return pv + scalar;
     }
 
     /**
-     * @brief Sottrazione scalare-vettore (friend)
+     * @brief Scalar-vector subtraction (friend)
      * 
-     * @param scalar Scalare a sinistra (minuendo)
-     * @param pv PositionVector a destra (sottraendo)
-     * @return Nuovo PositionVector con scalar - elementi
+     * @param scalar Scalar on the left (minuend)
+     * @param pv PositionVector on the right (subtrahend)
+     * @return New PositionVector with scalar - elements
      */
     friend PositionVector operator-(int scalar, const PositionVector& pv) {
         return pv - scalar;
     }
 
     /**
-     * @brief Moltiplicazione scalare-vettore (friend)
+     * @brief Scalar-vector multiplication (friend)
      * 
-     * @param scalar Scalare a sinistra
-     * @param pv PositionVector a destra
-     * @return Nuovo PositionVector risultato della moltiplicazione
+     * @param scalar Scalar on the left
+     * @param pv PositionVector on the right
+     * @return New PositionVector result of the multiplication
      */
     friend PositionVector operator*(int scalar, const PositionVector& pv) {
         return pv * scalar;
     }
 
     /**
-     * @brief Operatore di output stream
+     * @brief Output stream operator
      * 
-     * @param os Stream di output
-     * @param pv PositionVector da stampare
-     * @return Riferimento allo stream
+     * @param os Output stream
+     * @param pv PositionVector to print
+     * @return Reference to the stream
      * 
-     * @details Formato: [elem1, elem2, ..., elemN]
+     * @details Format: [elem1, elem2, ..., elemN]
      */
     friend ostream& operator<<(ostream& os, const PositionVector& pv) {
         os << "[";
@@ -638,19 +638,19 @@ public:
         return os;
     }
 
-    // ==================== METODI PRINCIPALI ====================
+    // ==================== MAIN METHODS ====================
 
     /**
-     * @brief Accesso ciclico agli elementi con wraparound
+     * @brief Cyclic access to elements with wraparound
      * 
-     * @param index Indice di accesso (può essere qualsiasi intero)
-     * @return Valore all'indice con comportamento ciclico
+     * @param index Access index (can be any integer)
+     * @return Value at the index with cyclic behavior
      * 
-     * @details L'accesso è ciclico: indici negativi accedono dal fondo,
-     *          indici >= size wrappano. Ogni ciclo completo aggiunge/sottrae
-     *          il range effettivo al valore restituito.
+     * @details Access is cyclic: negative indices access from the end,
+     *          indices >= size wrap. Each complete cycle adds/subtracts
+     *          the effective range to the returned value.
      * 
-     * @note Se il vettore è vuoto, ritorna 0
+     * @note If the vector is empty, returns 0
      */
     int element(int index) const {
         int size = static_cast<int>(data.size());
@@ -669,55 +669,55 @@ public:
     // ==================== GETTERS ====================
 
     /**
-     * @brief Ottiene il vettore dati
-     * @return Riferimento costante al vettore di interi
+     * @brief Gets the data vector
+     * @return Const reference to the integer vector
      */
     const vector<int>& getData() const { return data; }
 
     /**
-     * @brief Ottiene il modulo base
-     * @return Modulo corrente
+     * @brief Gets the base modulus
+     * @return Current modulus
      */
     int getMod() const { return mod; }
 
     /**
-     * @brief Ottiene il range definito dall'utente
-     * @return User range corrente
+     * @brief Gets the user-defined range
+     * @return Current user range
      */
     int getUserRange() const { return userRange; }
 
     /**
-     * @brief Ottiene il range effettivo
-     * @return Range attualmente utilizzato nei calcoli
+     * @brief Gets the effective range
+     * @return Range currently used in calculations
      */
     int getRange() const { return range; }
 
     /**
-     * @brief Verifica se l'aggiornamento automatico del range è attivo
-     * @return true se il range viene aggiornato automaticamente
+     * @brief Checks if automatic range updating is active
+     * @return true if the range is updated automatically
      */
     bool getRangeUpdate() const { return rangeUpdate; }
 
     /**
-     * @brief Verifica se viene usato userRange invece di mod
-     * @return true se userRange è la sorgente del range
+     * @brief Checks if userRange is used instead of mod
+     * @return true if userRange is the source of the range
      */
     bool getUser() const { return user; }
 
     /**
-     * @brief Ottiene la dimensione del vettore
-     * @return Numero di elementi nel vettore
+     * @brief Gets the size of the vector
+     * @return Number of elements in the vector
      */
     size_t size() const { return data.size(); }
 
     // ==================== SETTERS ====================
 
     /**
-     * @brief Imposta un nuovo modulo
+     * @brief Sets a new modulus
      * 
-     * @param newMod Nuovo valore del modulo
+     * @param newMod New modulus value
      * 
-     * @note Se rangeUpdate è attivo, il range viene ricalcolato automaticamente
+     * @note If rangeUpdate is active, the range is automatically recalculated
      */
     void setMod(int newMod) { 
         mod = newMod;
@@ -725,11 +725,11 @@ public:
     }
 
     /**
-     * @brief Imposta un nuovo user range
+     * @brief Sets a new user range
      * 
-     * @param newUserRange Nuovo valore del range utente
+     * @param newUserRange New user range value
      * 
-     * @note Se rangeUpdate è attivo, il range viene ricalcolato automaticamente
+     * @note If rangeUpdate is active, the range is automatically recalculated
      */
     void setUserRange(int newUserRange) { 
         userRange = newUserRange;
@@ -737,11 +737,11 @@ public:
     }
 
     /**
-     * @brief Imposta il flag di aggiornamento automatico del range
+     * @brief Sets the automatic range update flag
      * 
-     * @param newRangeUpdate true per attivare l'aggiornamento automatico
+     * @param newRangeUpdate true to activate automatic updating
      * 
-     * @note Se impostato a true, il range viene immediatamente ricalcolato
+     * @note If set to true, the range is immediately recalculated
      */
     void setRangeUpdate(bool newRangeUpdate) { 
         rangeUpdate = newRangeUpdate;
@@ -749,11 +749,11 @@ public:
     }
 
     /**
-     * @brief Imposta il flag per usare userRange
+     * @brief Sets the flag to use userRange
      * 
-     * @param newUser true per usare userRange invece di mod
+     * @param newUser true to use userRange instead of mod
      * 
-     * @note Se rangeUpdate è attivo, il range viene ricalcolato automaticamente
+     * @note If rangeUpdate is active, the range is automatically recalculated
      */
     void setUser(bool newUser) { 
         user = newUser;
@@ -761,31 +761,31 @@ public:
     }
 
     /**
-     * @brief Imposta manualmente il range
+     * @brief Manually sets the range
      * 
-     * @param newRange Nuovo valore del range
+     * @param newRange New range value
      * 
-     * @warning Questa operazione disattiva automaticamente rangeUpdate.
-     *          Il range rimarrà fisso fino a quando rangeUpdate non viene riattivato.
+     * @warning This operation automatically disables rangeUpdate.
+     *          The range will remain fixed until rangeUpdate is reactivated.
      */
     void setRange(int newRange) {
         range = newRange;
         rangeUpdate = false;
     }
 
-    // ==================== METODI STATICI ====================
+    // ==================== STATIC METHODS ====================
 
     /**
-     * @brief Adatta un insieme di vettori al minimo comune multiplo dei loro moduli
+     * @brief Adapts a set of vectors to the least common multiple of their moduli
      * 
-     * @param vectors Vettore di PositionVector da adattare
-     * @return Nuovo vettore di PositionVector con moduli uniformati
+     * @param vectors Vector of PositionVector to adapt
+     * @return New vector of PositionVector with uniform moduli
      * 
-     * @details Scala tutti i vettori in modo che abbiano lo stesso modulo (l'LCM di tutti i moduli).
-     *          Tutti i valori dei dati, userRange e range vengono scalati proporzionalmente.
+     * @details Scales all vectors so they have the same modulus (the LCM of all moduli).
+     *          All data values, userRange and range are scaled proportionally.
      * 
-     * @note Se tutti i vettori hanno già lo stesso modulo, ritorna una copia inalterata.
-     * @note Se il vettore di input è vuoto, ritorna un vettore vuoto.
+     * @note If all vectors already have the same modulus, returns an unchanged copy.
+     * @note If the input vector is empty, returns an empty vector.
      */
     static vector<PositionVector> adaptToLCM(const vector<PositionVector>& vectors) {
         if (vectors.empty()) {
@@ -826,18 +826,18 @@ public:
         return adaptedVectors;
     }
 
-    // ==================== METODI DI TRASFORMAZIONE ====================
+    // ==================== TRANSFORMATION METHODS ====================
 
     /**
-     * @brief Ruota gli elementi del vettore
+     * @brief Rotates the vector elements
      * 
-     * @param rotationAmount Quantità di rotazione (positiva o negativa)
-     * @return Nuovo PositionVector con elementi ruotati
+     * @param rotationAmount Rotation amount (positive or negative)
+     * @return New PositionVector with rotated elements
      * 
-     * @details La rotazione sposta circolarmente gli elementi.
-     *          I valori vengono adattati in base ai cicli attraverso il vettore.
+     * @details Rotation circularly shifts the elements.
+     *          Values are adjusted based on cycles through the vector.
      * 
-     * @note Se il vettore è vuoto, ritorna se stesso
+     * @note If the vector is empty, returns itself
      */
     PositionVector rotate(int rotationAmount) const {
         if (data.empty()) {
@@ -857,14 +857,14 @@ public:
     }
 
     /**
-     * @brief Roto-traslazione: estrae una sezione del vettore con accesso ciclico
+     * @brief Roto-translation: extracts a section of the vector with cyclic access
      * 
-     * @param startOffset Offset iniziale (può essere negativo o > size)
-     * @param length Lunghezza della sezione da estrarre (0 = usa dimensione corrente)
-     * @return Nuovo PositionVector con la sezione estratta
+     * @param startOffset Starting offset (can be negative or > size)
+     * @param length Length of the section to extract (0 = use current size)
+     * @return New PositionVector with the extracted section
      * 
-     * @details Estrae 'length' elementi a partire da startOffset.
-     *          L'accesso è ciclico, quindi startOffset può essere qualsiasi valore.
+     * @details Extracts 'length' elements starting from startOffset.
+     *          Access is cyclic, so startOffset can be any value.
      */
     PositionVector rotoTranslate(int startOffset, int length = 0) const {
         int outLength = (length == 0) ? static_cast<int>(data.size()) : abs(length);
@@ -878,14 +878,14 @@ public:
     }
 
     /**
-     * @brief Calcola il complemento del vettore rispetto al range
+     * @brief Calculates the complement of the vector with respect to the range
      * 
-     * @return Nuovo PositionVector contenente gli elementi non presenti nell'originale
+     * @return New PositionVector containing elements not present in the original
      * 
-     * @details Normalizza il vettore al suo valore minimo, identifica tutti i valori
-     *          nell'intervallo [0, range) che non sono presenti, e li denormalizza.
+     * @details Normalizes the vector to its minimum value, identifies all values
+     *          in the interval [0, range) that are not present, and denormalizes them.
      * 
-     * @note Se il vettore è vuoto, ritorna l'intero universo [0, range)
+     * @note If the vector is empty, returns the entire universe [0, range)
      */
     PositionVector complement() const {
         int effectiveRange = getRange();
@@ -913,16 +913,16 @@ public:
     }
 
     /**
-     * @brief Inversione rispetto a un asse specificato
+     * @brief Inversion with respect to a specified axis
      * 
-     * @param axisIndex Indice dell'elemento da usare come asse (con wraparound)
-     * @param sortOutput Se true, ordina il risultato
-     * @return Nuovo PositionVector invertito rispetto all'asse
+     * @param axisIndex Index of the element to use as axis (with wraparound)
+     * @param sortOutput If true, sorts the result
+     * @return New PositionVector inverted with respect to the axis
      * 
-     * @details Inverte tutti gli elementi rispetto al valore dell'elemento all'indice axisIndex.
+     * @details Inverts all elements with respect to the value of the element at axisIndex.
      *          Formula: result = 2 * axis_value - original_value
      * 
-     * @note Se il vettore è vuoto, ritorna se stesso
+     * @note If the vector is empty, returns itself
      */
     PositionVector inversion(int axisIndex, bool sortOutput = true) const {
         if (data.empty()) {
@@ -932,11 +932,11 @@ public:
         vector<int> invertedData(data.size());
         int size = static_cast<int>(data.size());
         
-        // Normalizza l'indice dell'asse
+        // Normalize the axis index
         int normalizedAxisIndex = euclideanDivision(axisIndex, size).remainder;
         int axisValue = data[normalizedAxisIndex];
         
-        // Applica l'inversione a tutti gli elementi
+        // Apply inversion to all elements
         for (size_t i = 0; i < data.size(); ++i) {
             invertedData[i] = 2 * axisValue - data[i];
         }
@@ -947,23 +947,23 @@ public:
     }
 
     /**
-     * @brief Calcola il negativo musicale del vettore
+     * @brief Calculates the musical negative of the vector
      * 
-     * @param axis Punto di riferimento per la negazione (default 10)
-     * @param standard Se true, usa la trasformazione standard (default true)
-     * @param sortResult Se true, ordina il risultato (default true)
-     * @return Nuovo PositionVector negato
+     * @param axis Reference point for negation (default 10)
+     * @param standard If true, uses standard transformation (default true)
+     * @param sortResult If true, sorts the result (default true)
+     * @return New PositionVector negated
      * 
-     * @details Operazione complessa di negazione musicale che:
-     *          - In modalità standard: moltiplica per 2, nega rispetto a (axis*2-1), divide per 2
-     *          - In modalità non-standard: nega direttamente rispetto ad axis
-     *          - Applica rotoTranslate(-1) al risultato
+     * @details Complex musical negation operation that:
+     *          - In standard mode: multiplies by 2, negates with respect to (axis*2-1), divides by 2
+     *          - In non-standard mode: negates directly with respect to axis
+     *          - Applies rotoTranslate(-1) to the result
      */
     PositionVector negative(int axis = 10, bool standard = true, bool sortResult = true) const {
         PositionVector result = *this;
         int adjustedPosition = axis;
         
-        // Step 1: Raddoppio (se richiesto)
+        // Step 1: Doubling (if requested)
         if (standard) {
             for (int& elem : result.data) {
                 elem *= 2;
@@ -971,52 +971,52 @@ public:
             adjustedPosition = (axis * 2) - 1;
         }
         
-        // Step 2: Sottrazione della posizione di riferimento
+        // Step 2: Subtraction of the reference position
         for (int& elem : result.data) {
             elem -= adjustedPosition;
         }
         
-        // Step 3: Negazione
+        // Step 3: Negation
         for (int& elem : result.data) {
             elem *= -1;
         }
         
-        // Step 4: Aggiunta della posizione di riferimento
+        // Step 4: Addition of the reference position
         for (int& elem : result.data) {
             elem += adjustedPosition;
         }
         
-        // Step 5: Divisione per 2 (se richiesto)
+        // Step 5: Division by 2 (if requested)
         if (standard) {
             for (int& elem : result.data) {
                 elem /= 2;
             }
         }
         
-        // Step 6: Ordinamento (se richiesto)
+        // Step 6: Sorting (if requested)
         if (sortResult) {
             sort(result.data.begin(), result.data.end());
         }
         
-        // Step 7: Roto-traslazione finale
+        // Step 7: Final roto-translation
         result = result.rotoTranslate(-1);
         
         return result;
     }
 
-    // ==================== OPERAZIONI COMPONENTE PER COMPONENTE ====================
+    // ==================== COMPONENT-WISE OPERATIONS ====================
 
     /**
-     * @brief Somma componente per componente con un vector<int>
+     * @brief Component-wise addition with a vector<int>
      * 
-     * @param other Vector da sommare
-     * @param useLooping Se true, usa wraparound ciclico; se false, estende con elementi non sommati
-     * @return Nuovo PositionVector risultato della somma
+     * @param other Vector to add
+     * @param useLooping If true, uses cyclic wraparound; if false, extends with non-added elements
+     * @return New PositionVector result of the addition
      * 
-     * @details Con useLooping=true: la lunghezza risultante è max(size1, size2),
-     *          e gli elementi wrappano ciclicamente.
-     *          Con useLooping=false: somma fino a min(size1, size2),
-     *          poi aggiunge gli elementi rimanenti non modificati.
+     * @details With useLooping=true: resulting length is max(size1, size2),
+     *          and elements wrap cyclically.
+     *          With useLooping=false: adds up to min(size1, size2),
+     *          then appends remaining unmodified elements.
      */
     PositionVector componentwiseSum(const vector<int>& other, bool useLooping = false) const {
         if (other.empty()) return *this;
@@ -1054,13 +1054,13 @@ public:
     }
 
     /**
-     * @brief Sottrazione componente per componente con un vector<int>
+     * @brief Component-wise subtraction with a vector<int>
      * 
-     * @param other Vector da sottrarre
-     * @param useLooping Se true, usa wraparound ciclico; se false, estende con elementi non sottratti
-     * @return Nuovo PositionVector risultato della sottrazione
+     * @param other Vector to subtract
+     * @param useLooping If true, uses cyclic wraparound; if false, extends with non-subtracted elements
+     * @return New PositionVector result of the subtraction
      * 
-     * @details Comportamento analogo a componentwiseSum ma con sottrazione
+     * @details Behavior analogous to componentwiseSum but with subtraction
      */
     PositionVector componentwiseSubtraction(const vector<int>& other, bool useLooping = false) const {
         if (other.empty()) return *this;
@@ -1098,14 +1098,14 @@ public:
     }
 
     /**
-     * @brief Prodotto componente per componente con un vector<int>
+     * @brief Component-wise product with a vector<int>
      * 
-     * @param other Vector da moltiplicare
-     * @param useLooping Se true (default), usa wraparound ciclico
-     * @return Nuovo PositionVector risultato del prodotto
+     * @param other Vector to multiply
+     * @param useLooping If true (default), uses cyclic wraparound
+     * @return New PositionVector result of the product
      * 
-     * @note Se other è vuoto, ritorna un vettore vuoto.
-     *       Se data è vuoto, ritorna se stesso.
+     * @note If other is empty, returns an empty vector.
+     *       If data is empty, returns itself.
      */
     PositionVector componentwiseProduct(const vector<int>& other, bool useLooping = true) const {
         if (other.empty()) return PositionVector({}, mod, userRange, rangeUpdate, user);
@@ -1143,14 +1143,14 @@ public:
     }
 
     /**
-     * @brief Divisione euclidea componente per componente con un vector<int>
+     * @brief Euclidean component-wise division with a vector<int>
      * 
-     * @param other Vector divisore
-     * @param useLooping Se true (default), usa wraparound ciclico
-     * @return Nuovo PositionVector con i quozienti
-     * @throw invalid_argument Se other è vuoto o contiene zeri
+     * @param other Vector divisor
+     * @param useLooping If true (default), uses cyclic wraparound
+     * @return New PositionVector with the quotients
+     * @throw invalid_argument If other is empty or contains zeros
      * 
-     * @note Utilizza la divisione euclidea per risultati consistenti
+     * @note Uses Euclidean division for consistent results
      */
     PositionVector componentwiseDivision(const vector<int>& other, bool useLooping = true) const {
         if (other.empty()) {
@@ -1198,14 +1198,14 @@ public:
     }
 
     /**
-     * @brief Modulo euclidea componente per componente con un vector<int>
+     * @brief Euclidean component-wise modulo with a vector<int>
      * 
-     * @param other Vector divisore
-     * @param useLooping Se true (default), usa wraparound ciclico
-     * @return Nuovo PositionVector con i resti
-     * @throw invalid_argument Se other è vuoto o contiene zeri
+     * @param other Vector divisor
+     * @param useLooping If true (default), uses cyclic wraparound
+     * @return New PositionVector with the remainders
+     * @throw invalid_argument If other is empty or contains zeros
      * 
-     * @note Utilizza la divisione euclidea per risultati consistenti
+     * @note Uses Euclidean division for consistent results
      */
     PositionVector componentwiseModulo(const vector<int>& other, bool useLooping = true) const {
         if (other.empty()) {
@@ -1252,34 +1252,34 @@ public:
         return PositionVector(result, mod, userRange, rangeUpdate, user);
     }
 
-    // ==================== METODI DI UTILITÀ ====================
+    // ==================== UTILITY METHODS ====================
 
     /**
-     * @brief Alias per operator+(int)
-     * @param scalar Valore da sommare
-     * @return Nuovo PositionVector con i valori sommati
+     * @brief Alias for operator+(int)
+     * @param scalar Value to add
+     * @return New PositionVector with the added values
      */
     PositionVector scalarSum(int scalar) const {
         return *this + scalar;
     }
 
     /**
-     * @brief Alias per operator*(int)
-     * @param scalar Fattore di moltiplicazione
-     * @return Nuovo PositionVector con i valori moltiplicati
+     * @brief Alias for operator*(int)
+     * @param scalar Multiplication factor
+     * @return New PositionVector with the multiplied values
      */
     PositionVector scalarProduct(int scalar) const {
         return *this * scalar;
     }
 
     /**
-     * @brief Concatena questo vettore con un altro
+     * @brief Concatenates this vector with another
      * 
-     * @param other PositionVector da concatenare
-     * @return Nuovo PositionVector con tutti gli elementi
+     * @param other PositionVector to concatenate
+     * @return New PositionVector with all elements
      * 
-     * @details Il risultato contiene prima tutti gli elementi di questo vettore,
-     *          poi tutti gli elementi di other. Mantiene le proprietà di questo vettore.
+     * @details The result contains first all elements of this vector,
+     *          then all elements of other. Maintains the properties of this vector.
      */
     PositionVector concatenate(const PositionVector& other) const {
         vector<int> result = data;
@@ -1288,12 +1288,12 @@ public:
     }
 
     /**
-     * @brief Ripete il vettore un numero specificato di volte
+     * @brief Repeats the vector a specified number of times
      * 
-     * @param times Numero di ripetizioni
-     * @return Nuovo PositionVector con il contenuto ripetuto
+     * @param times Number of repetitions
+     * @return New PositionVector with the repeated content
      * 
-     * @note Se times <= 0, ritorna un vettore vuoto
+     * @note If times <= 0, returns an empty vector
      */
     PositionVector repeat(int times) const {
         if (times <= 0) return PositionVector({}, mod, userRange, rangeUpdate, user);
@@ -1310,10 +1310,50 @@ public:
         return PositionVector(result, mod, userRange, rangeUpdate, user);
     }
 
-    // ==================== METODI DI DEBUG/OUTPUT ====================
+    /**
+     * @brief Resizes the vector to a specified range
+     * 
+     * @param start Starting index (inclusive)
+     * @param end Ending index (inclusive)
+     * @return New PositionVector with the resized content
+     * 
+     * @details If start <= end: ascending range from start to end
+     *          If start > end: descending range from start to end (backwards)
+     * 
+     * @note If the vector is empty, returns itself
+     */
+    PositionVector resize(int start, int end) const {
+        if (data.empty()) {
+            return *this;
+        }
+        
+        vector<int> resizedData;
+        
+        if (start <= end) {
+            // Ascending range: from start to end inclusive
+            int length = end - start + 1;
+            resizedData.reserve(length);
+            
+            for (int i = start; i <= end; ++i) {
+                resizedData.push_back((*this)[i]);
+            }
+        } else {
+            // Descending range: from start to end inclusive (backwards)
+            int length = start - end + 1;
+            resizedData.reserve(length);
+            
+            for (int i = start; i >= end; --i) {
+                resizedData.push_back((*this)[i]);
+            }
+        }
+        
+        return PositionVector(resizedData, mod, userRange, rangeUpdate, user);
+    }
+
+    // ==================== DEBUG/OUTPUT METHODS ====================
 
     /**
-     * @brief Stampa i dati del vettore
+     * @brief Prints the vector data
      * 
      * @details Output: "Data: [elem1, elem2, ..., elemN]"
      */
@@ -1327,9 +1367,9 @@ public:
     }
 
     /**
-     * @brief Stampa le informazioni sul range
+     * @brief Prints range information
      * 
-     * @details Mostra range, rangeUpdate, userRange, user, e la sorgente effettiva del range
+     * @details Shows range, rangeUpdate, userRange, user, and the effective range source
      */
     void printRangeInfo() const {
         cout << "Range: " << range << endl;
@@ -1340,18 +1380,18 @@ public:
     }
 
     /**
-     * @brief Stampa il modulo
+     * @brief Prints the modulus
      * 
-     * @details Output: "Mod: [valore]"
+     * @details Output: "Mod: [value]"
      */
     void printMod() const {
         cout << "Mod: " << mod << endl;
     }
 
     /**
-     * @brief Stampa tutte le informazioni del PositionVector
+     * @brief Prints all PositionVector information
      * 
-     * @details Stampa data, mod, informazioni sul range e dimensione
+     * @details Prints data, mod, range information and size
      */
     void printAll() const {
         cout << "=== PositionVector Info ===" << endl;

@@ -1,6 +1,6 @@
-#include "IntervalVector.h"
-#include "BinaryVector.h"
-#include "PositionVector.h"
+#include "../src/IntervalVector.h"
+#include "../src/BinaryVector.h"
+#include "../src/PositionVector.h"
 
 void printSeparator(const string& title) {
     cout << "\n" << string(60, '=') << "\n";
@@ -559,6 +559,13 @@ void testPositionVector() {
     cout << "pv23 (userRange 24, user=true): " << pv23 << endl;
     cout << "Effective range: " << pv23.getRange() << endl;
     
+    //Resize method
+    cout << "\n--- Resize Method ---\n";
+    PositionVector pvResize({0, 3, 6, 9}, 12);
+    cout << "Original: " << pvResize << endl;
+    PositionVector resized = pvResize.resize(-3, 6);
+    cout << "After resize(-1, 6): " << resized << endl;
+
     // Print methods
     cout << "\n--- Print Methods ---\n";
     PositionVector pv24({0, 4, 7, 11}, 12, 24, true, false);

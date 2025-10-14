@@ -49,6 +49,7 @@
         vector<int> sourceData = source.getData();
         int criterionModulo = static_cast<int>(sourceData.size());
         PositionVector actualCriterion(criterion.getData(), criterionModulo);
+        actualCriterion.setMod(source.size());
         PositionVector rotatedCriterion = (criterionRotation != 0) 
             ? actualCriterion.rotoTranslate(criterionRotation, voices)
             : actualCriterion;
@@ -88,9 +89,11 @@
                          const IntervalVector& criterion,
                          int criterionRotation = 0, int voices = 0) {
         // Apply rotation if needed
+        IntervalVector actualCriterion = criterion;
+        actualCriterion.setMod(source.size());
         IntervalVector rotatedCriterion = (criterionRotation != 0)
-            ? criterion.rotate(criterionRotation, voices)
-            : criterion;
+            ? actualCriterion.rotate(criterionRotation, voices)
+            : actualCriterion;
         
         // Determine output length
         int outLength = (voices > 0) ? voices : static_cast<int>(rotatedCriterion.size());
@@ -134,9 +137,11 @@
                          const IntervalVector& indices,
                          int criterionRotation = 0, int voices = 0) {
         // Apply rotation if needed
+        IntervalVector actualCriterion = indices;
+        actualCriterion.setMod(source.size());
         IntervalVector rotatedCriterion = (criterionRotation != 0)
-            ? indices.rotate(criterionRotation, voices)
-            : indices;
+            ? actualCriterion.rotate(criterionRotation, voices)
+            : actualCriterion;
         
         int sourceOffset = source.getOffset();
         int criterionOffset = rotatedCriterion.getOffset();
@@ -197,7 +202,8 @@
         vector<int> sourceData = source.getData();
         int off = source.getOffset();
         int criterionModulo = static_cast<int>(sourceData.size());
-        PositionVector actualCriterion(criterion.getData(), criterionModulo);
+        PositionVector actualCriterion = criterion;
+        actualCriterion.setMod(source.size());
         PositionVector rotatedCriterion = (criterionRotation != 0) 
             ? actualCriterion.rotoTranslate(criterionRotation, voices)
             : actualCriterion;
@@ -234,5 +240,4 @@
         return IntervalVector(result, off, source.getMod());
     }
 
-    
 #endif // SELECTION_H

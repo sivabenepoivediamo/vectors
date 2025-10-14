@@ -5,38 +5,38 @@
 
 /**
  * @file IntervalVector.h
- * @brief Definizione della classe IntervalVector per vettori di intervalli
+ * @brief Definition of the IntervalVector class for interval vectors
  * @author [not251]
  * @date 2025
  */
 
 /**
  * @class IntervalVector
- * @brief Classe per rappresentare un vettore di intervalli con accesso ciclico
+ * @brief Class to represent a vector of intervals with cyclic access
  * 
- * @details Un IntervalVector è un contenitore di intervalli (interi) che supporta:
- * - Accesso ciclico agli elementi
- * - Rotazione e inversione
- * - Operazioni matematiche scalari e vettoriali
- * - Offset per traslazioni
- * - Modulo per operazioni cicliche
+ * @details An IntervalVector is a container of intervals (integers) that supports:
+ * - Cyclic access to elements
+ * - Rotation and inversion
+ * - Scalar and vector mathematical operations
+ * - Offset for translations
+ * - Modulo for cyclic operations
  * 
- * Gli intervalli sono tipicamente usati in contesti musicali per rappresentare
- * distanze tra note, ma la classe è generica e utilizzabile in altri contesti.
+ * Intervals are typically used in musical contexts to represent
+ * distances between notes, but the class is generic and usable in other contexts.
  */
 class IntervalVector {
-private:
-    vector<int> data;    ///< Dati del vettore di intervalli
-    int offset;          ///< Offset per traslazioni
-    int mod;             ///< Modulo per operazioni cicliche
-
 public:
-    // ==================== COSTRUTTORI ====================
+    vector<int> data;    ///< Interval vector data
+    int offset;          ///< Offset for translations
+    int mod;             ///< Modulo for cyclic operations
+
+
+    // ==================== CONSTRUCTORS ====================
 
     /**
-     * @brief Costruttore di default
+     * @brief Default constructor
      * 
-     * @details Crea un IntervalVector con:
+     * @details Creates an IntervalVector with:
      *          - data = {0}
      *          - offset = 0
      *          - mod = 12
@@ -45,22 +45,22 @@ public:
         : data({0}), offset(0), mod(12) {}
 
     /**
-     * @brief Costruttore parametrizzato
+     * @brief Parameterized constructor
      * 
-     * @param in Vettore di intervalli iniziale
-     * @param newOffset Offset iniziale, default 0
+     * @param in Initial interval vector
+     * @param newOffset Initial offset, default 0
      * @param newMod Modulo, default 12
      */
     IntervalVector(const vector<int>& in, int newOffset = 0, int newMod = 12)
         : data(in), offset(newOffset), mod(newMod) {}
 
-    // ==================== OPERATORI SCALARI ====================
+    // ==================== SCALAR OPERATORS ====================
 
     /**
-     * @brief Somma uno scalare a tutti gli elementi
+     * @brief Adds a scalar to all elements
      * 
-     * @param scalar Valore da sommare
-     * @return Nuovo IntervalVector con i valori sommati
+     * @param scalar Value to add
+     * @return New IntervalVector with summed values
      */
     IntervalVector operator+(int scalar) const {
         vector<int> result(data.size());
@@ -71,10 +71,10 @@ public:
     }
 
     /**
-     * @brief Sottrae uno scalare da tutti gli elementi
+     * @brief Subtracts a scalar from all elements
      * 
-     * @param scalar Valore da sottrarre
-     * @return Nuovo IntervalVector con i valori sottratti
+     * @param scalar Value to subtract
+     * @return New IntervalVector with subtracted values
      */
     IntervalVector operator-(int scalar) const {
         vector<int> result(data.size());
@@ -85,10 +85,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica tutti gli elementi per uno scalare
+     * @brief Multiplies all elements by a scalar
      * 
-     * @param scalar Fattore di moltiplicazione
-     * @return Nuovo IntervalVector con i valori moltiplicati
+     * @param scalar Multiplication factor
+     * @return New IntervalVector with multiplied values
      */
     IntervalVector operator*(int scalar) const {
         vector<int> result(data.size());
@@ -99,11 +99,11 @@ public:
     }
 
     /**
-     * @brief Divide tutti gli elementi per uno scalare (divisione euclidea)
+     * @brief Divides all elements by a scalar (Euclidean division)
      * 
-     * @param divisor Divisore
-     * @return Nuovo IntervalVector con i quozienti
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return New IntervalVector with quotients
+     * @throw invalid_argument If divisor is 0
      */
     IntervalVector operator/(int divisor) const {
         if (divisor == 0) {
@@ -119,11 +119,11 @@ public:
     }
 
     /**
-     * @brief Calcola il resto della divisione euclidea per tutti gli elementi
+     * @brief Calculates the remainder of Euclidean division for all elements
      * 
-     * @param divisor Divisore
-     * @return Nuovo IntervalVector con i resti
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return New IntervalVector with remainders
+     * @throw invalid_argument If divisor is 0
      */
     IntervalVector operator%(int divisor) const {
         if (divisor == 0) {
@@ -138,131 +138,131 @@ public:
         return IntervalVector(result, offset, mod);
     }
 
-    // ==================== OPERATORI VETTORIALI ====================
+    // ==================== VECTOR OPERATORS ====================
 
     /**
-     * @brief Somma componente per componente con un altro IntervalVector
+     * @brief Component-wise addition with another IntervalVector
      * 
-     * @param other IntervalVector da sommare
-     * @return Nuovo IntervalVector risultato della somma
+     * @param other IntervalVector to add
+     * @return New IntervalVector result of the addition
      * 
-     * @note Utilizza componentwiseSum senza looping
+     * @note Uses componentwiseSum without looping
      */
     IntervalVector operator+(const IntervalVector& other) const {
         return componentwiseSum(other.data, false);
     }
 
     /**
-     * @brief Sottrazione componente per componente con un altro IntervalVector
+     * @brief Component-wise subtraction with another IntervalVector
      * 
-     * @param other IntervalVector da sottrarre
-     * @return Nuovo IntervalVector risultato della sottrazione
+     * @param other IntervalVector to subtract
+     * @return New IntervalVector result of the subtraction
      * 
-     * @note Utilizza componentwiseSubtraction senza looping
+     * @note Uses componentwiseSubtraction without looping
      */
     IntervalVector operator-(const IntervalVector& other) const {
         return componentwiseSubtraction(other.data, false);
     }
 
     /**
-     * @brief Prodotto componente per componente con un altro IntervalVector
+     * @brief Component-wise product with another IntervalVector
      * 
-     * @param other IntervalVector da moltiplicare
-     * @return Nuovo IntervalVector risultato del prodotto
+     * @param other IntervalVector to multiply
+     * @return New IntervalVector result of the product
      * 
-     * @note Utilizza componentwiseProduct con looping
+     * @note Uses componentwiseProduct with looping
      */
     IntervalVector operator*(const IntervalVector& other) const {
         return componentwiseProduct(other.data, true);
     }
 
     /**
-     * @brief Divisione componente per componente con un altro IntervalVector
+     * @brief Component-wise division with another IntervalVector
      * 
-     * @param other IntervalVector divisore
-     * @return Nuovo IntervalVector con i quozienti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other IntervalVector divisor
+     * @return New IntervalVector with quotients
+     * @throw invalid_argument If other contains zeros
      * 
-     * @note Utilizza componentwiseDivision con looping e divisione euclidea
+     * @note Uses componentwiseDivision with looping and Euclidean division
      */
     IntervalVector operator/(const IntervalVector& other) const {
         return componentwiseDivision(other.data, true);
     }
 
     /**
-     * @brief Modulo componente per componente con un altro IntervalVector
+     * @brief Component-wise modulo with another IntervalVector
      * 
-     * @param other IntervalVector divisore
-     * @return Nuovo IntervalVector con i resti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other IntervalVector divisor
+     * @return New IntervalVector with remainders
+     * @throw invalid_argument If other contains zeros
      * 
-     * @note Utilizza componentwiseModulo con looping e divisione euclidea
+     * @note Uses componentwiseModulo with looping and Euclidean division
      */
     IntervalVector operator%(const IntervalVector& other) const {
         return componentwiseModulo(other.data, true);
     }
 
-    // ==================== OPERATORI CON VECTOR<INT> ====================
+    // ==================== OPERATORS WITH VECTOR<INT> ====================
 
     /**
-     * @brief Somma componente per componente con un vector<int>
+     * @brief Component-wise addition with a vector<int>
      * 
-     * @param other Vector da sommare
-     * @return Nuovo IntervalVector risultato della somma
+     * @param other Vector to add
+     * @return New IntervalVector result of the addition
      */
     IntervalVector operator+(const vector<int>& other) const {
         return componentwiseSum(other, false);
     }
 
     /**
-     * @brief Sottrazione componente per componente con un vector<int>
+     * @brief Component-wise subtraction with a vector<int>
      * 
-     * @param other Vector da sottrarre
-     * @return Nuovo IntervalVector risultato della sottrazione
+     * @param other Vector to subtract
+     * @return New IntervalVector result of the subtraction
      */
     IntervalVector operator-(const vector<int>& other) const {
         return componentwiseSubtraction(other, false);
     }
 
     /**
-     * @brief Prodotto componente per componente con un vector<int>
+     * @brief Component-wise product with a vector<int>
      * 
-     * @param other Vector da moltiplicare
-     * @return Nuovo IntervalVector risultato del prodotto
+     * @param other Vector to multiply
+     * @return New IntervalVector result of the product
      */
     IntervalVector operator*(const vector<int>& other) const {
         return componentwiseProduct(other, true);
     }
 
     /**
-     * @brief Divisione componente per componente con un vector<int>
+     * @brief Component-wise division with a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Nuovo IntervalVector con i quozienti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return New IntervalVector with quotients
+     * @throw invalid_argument If other contains zeros
      */
     IntervalVector operator/(const vector<int>& other) const {
         return componentwiseDivision(other, true);
     }
 
     /**
-     * @brief Modulo componente per componente con un vector<int>
+     * @brief Component-wise modulo with a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Nuovo IntervalVector con i resti
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return New IntervalVector with remainders
+     * @throw invalid_argument If other contains zeros
      */
     IntervalVector operator%(const vector<int>& other) const {
         return componentwiseModulo(other, true);
     }
 
-    // ==================== OPERATORI DI ASSEGNAZIONE COMPOSTA ====================
+    // ==================== COMPOUND ASSIGNMENT OPERATORS ====================
 
     /**
-     * @brief Somma e assegna uno scalare
+     * @brief Add and assign a scalar
      * 
-     * @param scalar Valore da sommare
-     * @return Riferimento a questo oggetto modificato
+     * @param scalar Value to add
+     * @return Reference to this modified object
      */
     IntervalVector& operator+=(int scalar) {
         for (int& elem : data) {
@@ -272,10 +272,10 @@ public:
     }
 
     /**
-     * @brief Sottrae e assegna uno scalare
+     * @brief Subtract and assign a scalar
      * 
-     * @param scalar Valore da sottrarre
-     * @return Riferimento a questo oggetto modificato
+     * @param scalar Value to subtract
+     * @return Reference to this modified object
      */
     IntervalVector& operator-=(int scalar) {
         for (int& elem : data) {
@@ -285,10 +285,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica e assegna uno scalare
+     * @brief Multiply and assign a scalar
      * 
-     * @param scalar Fattore di moltiplicazione
-     * @return Riferimento a questo oggetto modificato
+     * @param scalar Multiplication factor
+     * @return Reference to this modified object
      */
     IntervalVector& operator*=(int scalar) {
         for (int& elem : data) {
@@ -298,11 +298,11 @@ public:
     }
 
     /**
-     * @brief Divide e assegna uno scalare
+     * @brief Divide and assign a scalar
      * 
-     * @param divisor Divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If divisor is 0
      */
     IntervalVector& operator/=(int divisor) {
         if (divisor == 0) {
@@ -317,11 +317,11 @@ public:
     }
 
     /**
-     * @brief Calcola il modulo e assegna
+     * @brief Calculate modulo and assign
      * 
-     * @param divisor Divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se divisor è 0
+     * @param divisor Divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If divisor is 0
      */
     IntervalVector& operator%=(int divisor) {
         if (divisor == 0) {
@@ -336,10 +336,10 @@ public:
     }
 
     /**
-     * @brief Somma e assegna un altro IntervalVector
+     * @brief Add and assign another IntervalVector
      * 
-     * @param other IntervalVector da sommare
-     * @return Riferimento a questo oggetto modificato
+     * @param other IntervalVector to add
+     * @return Reference to this modified object
      */
     IntervalVector& operator+=(const IntervalVector& other) {
         *this = *this + other;
@@ -347,10 +347,10 @@ public:
     }
 
     /**
-     * @brief Sottrae e assegna un altro IntervalVector
+     * @brief Subtract and assign another IntervalVector
      * 
-     * @param other IntervalVector da sottrarre
-     * @return Riferimento a questo oggetto modificato
+     * @param other IntervalVector to subtract
+     * @return Reference to this modified object
      */
     IntervalVector& operator-=(const IntervalVector& other) {
         *this = *this - other;
@@ -358,10 +358,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica e assegna un altro IntervalVector
+     * @brief Multiply and assign another IntervalVector
      * 
-     * @param other IntervalVector da moltiplicare
-     * @return Riferimento a questo oggetto modificato
+     * @param other IntervalVector to multiply
+     * @return Reference to this modified object
      */
     IntervalVector& operator*=(const IntervalVector& other) {
         *this = *this * other;
@@ -369,11 +369,11 @@ public:
     }
 
     /**
-     * @brief Divide e assegna un altro IntervalVector
+     * @brief Divide and assign another IntervalVector
      * 
-     * @param other IntervalVector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other IntervalVector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     IntervalVector& operator/=(const IntervalVector& other) {
         *this = *this / other;
@@ -381,11 +381,11 @@ public:
     }
 
     /**
-     * @brief Calcola il modulo e assegna con un altro IntervalVector
+     * @brief Calculate modulo and assign with another IntervalVector
      * 
-     * @param other IntervalVector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other IntervalVector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     IntervalVector& operator%=(const IntervalVector& other) {
         *this = *this % other;
@@ -393,10 +393,10 @@ public:
     }
 
     /**
-     * @brief Somma e assegna un vector<int>
+     * @brief Add and assign a vector<int>
      * 
-     * @param other Vector da sommare
-     * @return Riferimento a questo oggetto modificato
+     * @param other Vector to add
+     * @return Reference to this modified object
      */
     IntervalVector& operator+=(const vector<int>& other) {
         *this = *this + other;
@@ -404,10 +404,10 @@ public:
     }
 
     /**
-     * @brief Sottrae e assegna un vector<int>
+     * @brief Subtract and assign a vector<int>
      * 
-     * @param other Vector da sottrarre
-     * @return Riferimento a questo oggetto modificato
+     * @param other Vector to subtract
+     * @return Reference to this modified object
      */
     IntervalVector& operator-=(const vector<int>& other) {
         *this = *this - other;
@@ -415,10 +415,10 @@ public:
     }
 
     /**
-     * @brief Moltiplica e assegna un vector<int>
+     * @brief Multiply and assign a vector<int>
      * 
-     * @param other Vector da moltiplicare
-     * @return Riferimento a questo oggetto modificato
+     * @param other Vector to multiply
+     * @return Reference to this modified object
      */
     IntervalVector& operator*=(const vector<int>& other) {
         *this = *this * other;
@@ -426,11 +426,11 @@ public:
     }
 
     /**
-     * @brief Divide e assegna un vector<int>
+     * @brief Divide and assign a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     IntervalVector& operator/=(const vector<int>& other) {
         *this = *this / other;
@@ -438,92 +438,92 @@ public:
     }
 
     /**
-     * @brief Calcola il modulo e assegna con un vector<int>
+     * @brief Calculate modulo and assign with a vector<int>
      * 
-     * @param other Vector divisore
-     * @return Riferimento a questo oggetto modificato
-     * @throw invalid_argument Se other contiene zeri
+     * @param other Vector divisor
+     * @return Reference to this modified object
+     * @throw invalid_argument If other contains zeros
      */
     IntervalVector& operator%=(const vector<int>& other) {
         *this = *this % other;
         return *this;
     }
 
-    // ==================== OPERATORI DI ACCESSO E CONFRONTO ====================
+    // ==================== ACCESS AND COMPARISON OPERATORS ====================
 
     /**
-     * @brief Accesso ciclico agli elementi
+     * @brief Cyclic access to elements
      * 
-     * @param index Indice (può essere negativo o maggiore della dimensione)
-     * @return Valore all'indice specificato con wraparound ciclico
+     * @param index Index (can be negative or greater than size)
+     * @return Value at specified index with cyclic wraparound
      */
     int operator[](int index) const {
         return element(index);
     }
 
     /**
-     * @brief Operatore di uguaglianza
+     * @brief Equality operator
      * 
-     * @param other IntervalVector da confrontare
-     * @return true se i vettori sono uguali, false altrimenti
+     * @param other IntervalVector to compare
+     * @return true if vectors are equal, false otherwise
      */
     bool operator==(const IntervalVector& other) const {
         return data == other.data && offset == other.offset && mod == other.mod;
     }
 
     /**
-     * @brief Operatore di disuguaglianza
+     * @brief Inequality operator
      * 
-     * @param other IntervalVector da confrontare
-     * @return true se i vettori sono diversi, false altrimenti
+     * @param other IntervalVector to compare
+     * @return true if vectors are different, false otherwise
      */
     bool operator!=(const IntervalVector& other) const {
         return !(*this == other);
     }
 
-    // ==================== OPERATORI FRIEND ====================
+    // ==================== FRIEND OPERATORS ====================
 
     /**
-     * @brief Somma scalare-vettore (friend)
+     * @brief Scalar-vector addition (friend)
      * 
-     * @param scalar Scalare a sinistra
-     * @param iv IntervalVector a destra
-     * @return Nuovo IntervalVector risultato della somma
+     * @param scalar Scalar on the left
+     * @param iv IntervalVector on the right
+     * @return New IntervalVector result of the addition
      */
     friend IntervalVector operator+(int scalar, const IntervalVector& iv) {
         return iv + scalar;
     }
 
     /**
-     * @brief Sottrazione scalare-vettore (friend)
+     * @brief Scalar-vector subtraction (friend)
      * 
-     * @param scalar Scalare a sinistra (minuendo)
-     * @param iv IntervalVector a destra (sottraendo)
-     * @return Nuovo IntervalVector con scalar - elementi
+     * @param scalar Scalar on the left (minuend)
+     * @param iv IntervalVector on the right (subtrahend)
+     * @return New IntervalVector with scalar - elements
      */
     friend IntervalVector operator-(int scalar, const IntervalVector& iv) {
         return iv - scalar;
     }
 
     /**
-     * @brief Moltiplicazione scalare-vettore (friend)
+     * @brief Scalar-vector multiplication (friend)
      * 
-     * @param scalar Scalare a sinistra
-     * @param iv IntervalVector a destra
-     * @return Nuovo IntervalVector risultato della moltiplicazione
+     * @param scalar Scalar on the left
+     * @param iv IntervalVector on the right
+     * @return New IntervalVector result of the multiplication
      */
     friend IntervalVector operator*(int scalar, const IntervalVector& iv) {
         return iv * scalar;
     }
 
     /**
-     * @brief Operatore di output stream
+     * @brief Output stream operator
      * 
-     * @param os Stream di output
-     * @param iv IntervalVector da stampare
-     * @return Riferimento allo stream
+     * @param os Output stream
+     * @param iv IntervalVector to print
+     * @return Reference to the stream
      * 
-     * @details Formato: [elem1, elem2, ..., elemN]
+     * @details Format: [elem1, elem2, ..., elemN]
      */
     friend ostream& operator<<(ostream& os, const IntervalVector& iv) {
     os << "[";
@@ -535,15 +535,15 @@ public:
     return os;
 }
 
-    // ==================== METODI PRINCIPALI ====================
+    // ==================== MAIN METHODS ====================
 
     /**
-     * @brief Accesso ciclico agli elementi
+     * @brief Cyclic access to elements
      * 
-     * @param i Indice di accesso (può essere qualsiasi intero)
-     * @return Valore all'indice con comportamento ciclico
+     * @param i Access index (can be any integer)
+     * @return Value at index with cyclic behavior
      * 
-     * @note Se il vettore è vuoto, ritorna 0
+     * @note If the vector is empty, returns 0
      */
     int element(int i) const {
         if (data.empty()) {
@@ -556,13 +556,13 @@ public:
     }
 
     /**
-     * @brief Ruota gli elementi del vettore
+     * @brief Rotates the vector elements
      * 
-     * @param r Quantità di rotazione
-     * @param n Lunghezza del risultato (0 = usa dimensione corrente)
-     * @return Nuovo IntervalVector con elementi ruotati
+     * @param r Rotation amount
+     * @param n Result length (0 = use current size)
+     * @return New IntervalVector with rotated elements
      * 
-     * @details Estrae n elementi a partire dall'indice r con accesso ciclico
+     * @details Extracts n elements starting from index r with cyclic access
      */
     IntervalVector rotate(int r, int n = 0) const {
         n = abs(n);
@@ -576,9 +576,9 @@ public:
     }
 
     /**
-     * @brief Inverte l'ordine degli elementi (retrograde)
+     * @brief Reverses the order of elements (retrograde)
      * 
-     * @return Nuovo IntervalVector con elementi in ordine inverso
+     * @return New IntervalVector with elements in reverse order
      */
     IntervalVector reverse() const {
         vector<int> out(data.size());
@@ -589,28 +589,28 @@ public:
     }
 
     /**
-     * @brief Retrograde (alias per reverse)
+     * @brief Retrograde (alias for reverse)
      * 
-     * @return Nuovo IntervalVector con elementi in ordine inverso
+     * @return New IntervalVector with elements in reverse order
      */
     IntervalVector retrograde() const {
         return reverse();
     }
 
     /**
-     * @brief Inversione: riflette la sequenza rispetto a un asse
+     * @brief Inversion: reflects the sequence around an axis
      * 
-     * @param axisIndex Posizione dell'asse di riflessione (0 = inizio, size = fine)
-     * @return Nuovo IntervalVector con elementi riflessi rispetto all'asse
+     * @param axisIndex Position of the reflection axis (0 = start, size = end)
+     * @return New IntervalVector with elements reflected around the axis
      * 
-     * @details Riflette l'ordine degli elementi rispetto a una posizione.
-     *          Gli elementi prima dell'asse vengono invertiti di ordine,
-     *          e anche gli elementi dopo l'asse vengono invertiti di ordine.
+     * @details Reflects the order of elements around a position.
+     *          Elements before the axis are reversed in order,
+     *          and elements after the axis are also reversed in order.
      *          
-     *          Esempio con [2, 2, 1]:
-     *          - axisIndex=0: [2, 2, 1] (nessun elemento prima dell'asse)
-     *          - axisIndex=1: [2, 2, 1] (1 elemento prima, invertito con se stesso)
-     *          - axisIndex=2: [1, 2, 2] (2 elementi prima vengono scambiati)
+     *          Example with [2, 2, 1]:
+     *          - axisIndex=0: [2, 2, 1] (no elements before axis)
+     *          - axisIndex=1: [2, 2, 1] (1 element before, reversed with itself)
+     *          - axisIndex=2: [1, 2, 2] (2 elements before are swapped)
      */
     IntervalVector inversion(int axisIndex = 0) const {
         if (data.empty()) {
@@ -623,12 +623,12 @@ public:
         
         vector<int> result = data;
         
-        // Inverti gli elementi prima dell'asse
+        // Reverse elements before the axis
         for (int i = 0; i < normalizedAxis / 2; ++i) {
             swap(result[i], result[normalizedAxis - 1 - i]);
         }
         
-        // Inverti gli elementi dopo l'asse
+        // Reverse elements after the axis
         int start = normalizedAxis;
         int end = size;
         int len = end - start;
@@ -640,9 +640,9 @@ public:
     }
 
     /**
-     * @brief Negazione degli intervalli
+     * @brief Negation of intervals
      * 
-     * @return Nuovo IntervalVector con tutti gli intervalli negati
+     * @return New IntervalVector with all intervals negated
      */
     IntervalVector negate() const {
         vector<int> result(data.size());
@@ -653,10 +653,10 @@ public:
     }
 
     /**
-     * @brief Normalizza gli intervalli rispetto a un modulo
+     * @brief Normalizes intervals with respect to a modulo
      * 
-     * @param modulo Modulo per la normalizzazione (se 0, usa mod)
-     * @return Nuovo IntervalVector normalizzato
+     * @param modulo Modulo for normalization (if 0, uses mod)
+     * @return New normalized IntervalVector
      */
     IntervalVector normalize(int modulo = 0) const {
         if (modulo == 0) modulo = mod;
@@ -673,77 +673,77 @@ public:
     // ==================== GETTERS ====================
 
     /**
-     * @brief Ottiene il vettore dati
-     * @return Riferimento costante al vettore di intervalli
+     * @brief Gets the data vector
+     * @return Const reference to the interval vector
      */
     const vector<int>& getData() const { return data; }
 
     /**
-     * @brief Ottiene l'offset
-     * @return Offset corrente
+     * @brief Gets the offset
+     * @return Current offset
      */
     int getOffset() const { return offset; }
 
     /**
-     * @brief Ottiene il modulo
-     * @return Modulo corrente
+     * @brief Gets the modulo
+     * @return Current modulo
      */
     int getMod() const { return mod; }
 
     /**
-     * @brief Ottiene la dimensione del vettore
-     * @return Numero di elementi nel vettore
+     * @brief Gets the vector size
+     * @return Number of elements in the vector
      */
     size_t size() const { return data.size(); }
 
     /**
-     * @brief Verifica se il vettore è vuoto
-     * @return true se il vettore non contiene elementi
+     * @brief Checks if the vector is empty
+     * @return true if the vector contains no elements
      */
     bool empty() const { return data.empty(); }
 
     // ==================== SETTERS ====================
 
     /**
-     * @brief Imposta un nuovo offset
+     * @brief Sets a new offset
      * 
-     * @param newOffset Nuovo valore dell'offset
+     * @param newOffset New offset value
      */
     void setOffset(int newOffset) { 
         offset = newOffset;
     }
 
     /**
-     * @brief Imposta un nuovo modulo
+     * @brief Sets a new modulo
      * 
-     * @param newMod Nuovo valore del modulo
+     * @param newMod New modulo value
      */
     void setMod(int newMod) { 
         mod = newMod;
     }
 
     /**
-     * @brief Imposta nuovi dati
+     * @brief Sets new data
      * 
-     * @param newData Nuovo vettore di intervalli
+     * @param newData New interval vector
      */
     void setData(const vector<int>& newData) {
         data = newData;
     }
 
-    // ==================== OPERAZIONI COMPONENTE PER COMPONENTE ====================
+    // ==================== COMPONENT-WISE OPERATIONS ====================
 
     /**
-     * @brief Somma componente per componente con un vector<int>
+     * @brief Component-wise addition with a vector<int>
      * 
-     * @param other Vector da sommare
-     * @param useLooping Se true, usa wraparound ciclico; se false, estende con elementi non sommati
-     * @return Nuovo IntervalVector risultato della somma
+     * @param other Vector to add
+     * @param useLooping If true, uses cyclic wraparound; if false, extends with non-added elements
+     * @return New IntervalVector result of the addition
      * 
-     * @details Con useLooping=true: la lunghezza risultante è max(size1, size2),
-     *          e gli elementi wrappano ciclicamente.
-     *          Con useLooping=false: somma fino a min(size1, size2),
-     *          poi aggiunge gli elementi rimanenti non modificati.
+     * @details With useLooping=true: resulting length is max(size1, size2),
+     *          and elements wrap cyclically.
+     *          With useLooping=false: adds up to min(size1, size2),
+     *          then appends remaining unmodified elements.
      */
     IntervalVector componentwiseSum(const vector<int>& other, bool useLooping = false) const {
         if (other.empty()) return *this;
@@ -781,11 +781,11 @@ public:
     }
 
     /**
-     * @brief Sottrazione componente per componente con un vector<int>
+     * @brief Component-wise subtraction with a vector<int>
      * 
-     * @param other Vector da sottrarre
-     * @param useLooping Se true, usa wraparound ciclico; se false, estende con elementi non sottratti
-     * @return Nuovo IntervalVector risultato della sottrazione
+     * @param other Vector to subtract
+     * @param useLooping If true, uses cyclic wraparound; if false, extends with non-subtracted elements
+     * @return New IntervalVector result of the subtraction
      */
     IntervalVector componentwiseSubtraction(const vector<int>& other, bool useLooping = false) const {
         if (other.empty()) return *this;
@@ -823,11 +823,11 @@ public:
     }
 
     /**
-     * @brief Prodotto componente per componente con un vector<int>
+     * @brief Component-wise product with a vector<int>
      * 
-     * @param other Vector da moltiplicare
-     * @param useLooping Se true (default), usa wraparound ciclico
-     * @return Nuovo IntervalVector risultato del prodotto
+     * @param other Vector to multiply
+     * @param useLooping If true (default), uses cyclic wraparound
+     * @return New IntervalVector result of the product
      */
     IntervalVector componentwiseProduct(const vector<int>& other, bool useLooping = true) const {
         if (other.empty()) return IntervalVector({}, offset, mod);
@@ -865,12 +865,12 @@ public:
     }
 
     /**
-     * @brief Divisione euclidea componente per componente con un vector<int>
+     * @brief Euclidean component-wise division with a vector<int>
      * 
-     * @param other Vector divisore
-     * @param useLooping Se true (default), usa wraparound ciclico
-     * @return Nuovo IntervalVector con i quozienti
-     * @throw invalid_argument Se other è vuoto o contiene zeri
+     * @param other Vector divisor
+     * @param useLooping If true (default), uses cyclic wraparound
+     * @return New IntervalVector with quotients
+     * @throw invalid_argument If other is empty or contains zeros
      */
     IntervalVector componentwiseDivision(const vector<int>& other, bool useLooping = true) const {
         if (other.empty()) {
@@ -918,12 +918,12 @@ public:
     }
 
     /**
-     * @brief Modulo euclidea componente per componente con un vector<int>
+     * @brief Euclidean component-wise modulo with a vector<int>
      * 
-     * @param other Vector divisore
-     * @param useLooping Se true (default), usa wraparound ciclico
-     * @return Nuovo IntervalVector con i resti
-     * @throw invalid_argument Se other è vuoto o contiene zeri
+     * @param other Vector divisor
+     * @param useLooping If true (default), uses cyclic wraparound
+     * @return New IntervalVector with remainders
+     * @throw invalid_argument If other is empty or contains zeros
      */
     IntervalVector componentwiseModulo(const vector<int>& other, bool useLooping = true) const {
         if (other.empty()) {
@@ -970,27 +970,27 @@ public:
         return IntervalVector(result, offset, mod);
     }
 
-    // ==================== METODI STATICI ====================
+    // ==================== STATIC METHODS ====================
 
     /**
-     * @brief Adatta un insieme di vettori al minimo comune multiplo dei loro moduli
+     * @brief Adapts a set of vectors to the least common multiple of their modulos
      * 
-     * @param vectors Vettore di IntervalVector da adattare
-     * @return Nuovo vettore di IntervalVector con moduli uniformati
+     * @param vectors Vector of IntervalVectors to adapt
+     * @return New vector of IntervalVectors with uniform modulos
      * 
-     * @details Scala tutti i vettori in modo che abbiano lo stesso modulo (l'LCM di tutti i moduli).
-     *          Tutti i valori dei dati e degli offset vengono scalati proporzionalmente.
+     * @details Scales all vectors so they have the same modulo (the LCM of all modulos).
+     *          All data values and offsets are scaled proportionally.
      * 
-     * @note Se tutti i vettori hanno già lo stesso modulo, ritorna una copia inalterata.
-     * @note Se il vettore di input è vuoto, ritorna un vettore vuoto.
-     * @note I vettori con mod = 0 vengono ignorati nel calcolo dell'LCM
+     * @note If all vectors already have the same modulo, returns an unmodified copy.
+     * @note If the input vector is empty, returns an empty vector.
+     * @note Vectors with mod = 0 are ignored in the LCM calculation
      */
     static vector<IntervalVector> adaptToLCM(const vector<IntervalVector>& vectors) {
         if (vectors.empty()) {
             return vector<IntervalVector>();
         }
         
-        // Raccogli tutti i moduli unici (escludi 0)
+        // Collect all unique modulos (exclude 0)
         set<int> uniqueModulos;
         for (const auto& iv : vectors) {
             if (iv.mod != 0) {
@@ -998,35 +998,35 @@ public:
             }
         }
         
-        // Se non ci sono moduli validi o c'è un solo modulo, ritorna copia
+        // If no valid modulos or only one modulo, return copy
         if (uniqueModulos.empty() || uniqueModulos.size() == 1) {
             return vectors;
         }
         
-        // Calcola LCM
+        // Calculate LCM
         vector<int> modulosList(uniqueModulos.begin(), uniqueModulos.end());
         int lcm = LCM(modulosList);
         
-        // Adatta ogni vettore
+        // Adapt each vector
         vector<IntervalVector> adaptedVectors;
         adaptedVectors.reserve(vectors.size());
         
         for (const IntervalVector& iv : vectors) {
             if (iv.mod == 0) {
-                // Se mod è 0, mantieni il vettore invariato
+                // If mod is 0, keep the vector unchanged
                 adaptedVectors.push_back(iv);
                 continue;
             }
             
             int scaleFactor = lcm / iv.mod;
             
-            // Scala i dati
+            // Scale the data
             vector<int> scaledData(iv.data.size());
             for (size_t i = 0; i < iv.data.size(); ++i) {
                 scaledData[i] = iv.data[i] * scaleFactor;
             }
             
-            // Scala l'offset
+            // Scale the offset
             int scaledOffset = iv.offset * scaleFactor;
             
             adaptedVectors.push_back(IntervalVector(scaledData, scaledOffset, lcm));
@@ -1035,13 +1035,13 @@ public:
         return adaptedVectors;
     }
 
-    // ==================== METODI DI UTILITÀ ====================
+    // ==================== UTILITY METHODS ====================
 
     /**
-     * @brief Concatena questo vettore con un altro
+     * @brief Concatenates this vector with another
      * 
-     * @param other IntervalVector da concatenare
-     * @return Nuovo IntervalVector con tutti gli elementi
+     * @param other IntervalVector to concatenate
+     * @return New IntervalVector with all elements
      */
     IntervalVector concatenate(const IntervalVector& other) const {
         vector<int> result = data;
@@ -1050,10 +1050,10 @@ public:
     }
 
     /**
-     * @brief Ripete il vettore un numero specificato di volte
+     * @brief Repeats the vector a specified number of times
      * 
-     * @param times Numero di ripetizioni
-     * @return Nuovo IntervalVector con il contenuto ripetuto
+     * @param times Number of repetitions
+     * @return New IntervalVector with repeated content
      */
     IntervalVector repeat(int times) const {
         if (times <= 0) return IntervalVector({}, offset, mod);
@@ -1066,20 +1066,21 @@ public:
         }
         return IntervalVector(result, offset, mod);
     }
-    // ==================== METODI DI MIRRORING ====================
+
+    // ==================== MIRRORING METHODS ====================
 
     /**
-     * @brief Riflette singolarmente gli elementi a sinistra o destra di una posizione
+     * @brief Individually reflects elements to the left or right of a position
      * 
-     * @param position Posizione attorno alla quale avviene la riflessione
-     * @param left Se true, riflette elementi a sinistra; se false, a destra
-     * @return Nuovo IntervalVector con elementi riflessi
+     * @param position Position around which reflection occurs
+     * @param left If true, reflects elements to the left; if false, to the right
+     * @return New IntervalVector with reflected elements
      * 
-     * @details Se left=true: riflette gli elementi fino a position verso l'interno.
-     *          Se left=false: riflette gli elementi da position alla fine verso l'esterno.
-     *          Crea un pattern riflette attorno a una posizione in una direzione.
+     * @details If left=true: reflects elements up to position inward.
+     *          If left=false: reflects elements from position to end outward.
+     *          Creates a reflected pattern around a position in one direction.
      * 
-     * @note Se position è fuori range [0, size], ritorna una copia inalterata
+     * @note If position is out of range [0, size], returns an unmodified copy
      */
     IntervalVector singleMirror(int position, bool left) const {
         vector<int> out = data;
@@ -1104,16 +1105,16 @@ public:
     }
 
     /**
-     * @brief Riflette in due direzioni attorno a una posizione centrale
+     * @brief Reflects in two directions around a central position
      * 
-     * @param position Posizione centrale attorno alla quale avvengono le riflessioni
-     * @return Nuovo IntervalVector con elementi riflessi simmetricamente
+     * @param position Central position around which reflections occur
+     * @return New IntervalVector with symmetrically reflected elements
      * 
-     * @details Prima riflette gli elementi fino a position verso l'interno.
-     *          Poi riflette gli elementi dopo position verso l'esterno.
-     *          Crea un pattern simmetrico attorno alla posizione in entrambe le direzioni.
+     * @details First reflects elements up to position inward.
+     *          Then reflects elements after position outward.
+     *          Creates a symmetric pattern around the position in both directions.
      * 
-     * @note Se position è fuori range [0, size], ritorna una copia inalterata
+     * @note If position is out of range [0, size], returns an unmodified copy
      */
     IntervalVector doubleMirror(int position) const {
         vector<int> out = data;
@@ -1123,12 +1124,12 @@ public:
             return *this;
         }
 
-        // Specchia la parte sinistra (fino a position)
+        // Mirror the left part (up to position)
         for (int i = 0; i < position / 2; i++) {
             swap(out[i], out[position - 1 - i]);
         }
 
-        // Specchia la parte destra (da position alla fine)
+        // Mirror the right part (from position to end)
         int end = position + (length - position) / 2;
         for (int i = position; i < end; i++) {
             swap(out[i], out[length - 1 - (i - position)]);
@@ -1138,17 +1139,17 @@ public:
     }
 
     /**
-     * @brief Riflette elementi dal lato opposto di una posizione
+     * @brief Reflects elements from the opposite side of a position
      * 
-     * @param position Posizione centrale attorno alla quale avviene la riflessione
-     * @param left Se true, riflette elementi da sinistra a destra; se false, da destra a sinistra
-     * @return Nuovo IntervalVector con elementi riflessi dal lato opposto
+     * @param position Central position around which reflection occurs
+     * @param left If true, reflects elements from left to right; if false, from right to left
+     * @return New IntervalVector with elements reflected from the opposite side
      * 
-     * @details Se left=true: riflette elementi dalla sezione sinistra (fino a pos) verso la fine destra.
-     *          Se left=false: riflette elementi dalla sezione destra (da pos in poi) verso l'inizio.
-     *          Crea una riflessione attraverso la posizione da un lato all'altro.
+     * @details If left=true: reflects elements from the left section (up to pos) toward the right end.
+     *          If left=false: reflects elements from the right section (from pos onward) toward the start.
+     *          Creates a reflection across the position from one side to the other.
      * 
-     * @note Se position è fuori range, ritorna una copia inalterata
+     * @note If position is out of range, returns an unmodified copy
      */
     IntervalVector crossMirror(int position, bool left) const {
         vector<int> out = data;
@@ -1168,10 +1169,10 @@ public:
     }
 
 
-    // ==================== METODI DI DEBUG/OUTPUT ====================
+    // ==================== DEBUG/OUTPUT METHODS ====================
 
     /**
-     * @brief Stampa i dati del vettore
+     * @brief Prints the vector data
      * 
      * @details Output: "Data: [elem1, elem2, ..., elemN]"
      */
@@ -1185,27 +1186,27 @@ public:
     }
 
     /**
-     * @brief Stampa l'offset
+     * @brief Prints the offset
      * 
-     * @details Output: "Offset: [valore]"
+     * @details Output: "Offset: [value]"
      */
     void printOffset() const {
         cout << "Offset: " << offset << endl;
     }
 
     /**
-     * @brief Stampa il modulo
+     * @brief Prints the modulo
      * 
-     * @details Output: "Mod: [valore]"
+     * @details Output: "Mod: [value]"
      */
     void printMod() const {
         cout << "Mod: " << mod << endl;
     }
 
     /**
-     * @brief Stampa tutte le informazioni dell'IntervalVector
+     * @brief Prints all IntervalVector information
      * 
-     * @details Stampa data, offset, modulo e dimensione
+     * @details Prints data, offset, modulo, and size
      */
     void printAll() const {
         cout << "=== IntervalVector Info ===" << endl;

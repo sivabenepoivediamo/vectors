@@ -1,9 +1,7 @@
-#ifndef Vectors_H
-#define Vectors_H
+#ifndef Vector_H
+#define Vector_H
 
-#include "./positionVector.h"
-#include "./intervalVector.h"
-#include "./binaryVector.h"
+#include "./vectors.h"
 
 /**
  * @file Vectors.h
@@ -25,14 +23,14 @@
  * Operations on any representation update all others.
  */
 class Vectors {
-private:
+public:
     PositionVector positions;
     IntervalVector intervals;
     BinaryVector binary;
     int mod;  ///< Global modulo for all representations
     
     // ==================== CONVERSION FUNCTIONS ====================
-    
+private:    
     /**
      * @brief Converts positions to intervals
      * @return IntervalVector derived from current positions
@@ -223,7 +221,7 @@ public:
         return result;
     }
     
-    Vectors negativePositions(int axis = 10) {
+    Vectors negative(int axis = 10) {
         Vectors result(*this);
         result.positions = positions.negative(axis);
         result.updateFromPositions();
@@ -249,7 +247,14 @@ public:
         result.updateFromPositions();
         return result;
     }
-    
+
+    /**
+     * @brief Alias for roto-translation
+     */
+    Vectors inversion(int amount, int length = 0) {
+        return rototranslatePositions(amount, length);
+    }
+
     /**
      * @brief Invert positions around axis
      */
@@ -315,23 +320,21 @@ public:
     /**
      * @brief Negate intervals
      */
-    Vectors negateIntervals() {
-        Vectors result(*this);
-        result.intervals = intervals.negate();
-        result.updateFromIntervals();
-        return result;
-    }
-    
-    /**
-     * @brief Negate intervals
-     */
     Vectors invertIntervals(int axisIndex) {
         Vectors result(*this);
         result.intervals = intervals.inversion(axisIndex);
         result.updateFromIntervals();
         return result;
     }
-    
+        /**
+     * @brief Alias for interval rotation
+     */
+    Vectors mode (int amount) {
+        return rotateIntervals(amount);
+    }
+
+
+
     // ==================== BINARY OPERATIONS ====================
     
     /**
@@ -486,56 +489,8 @@ public:
     }
 };
 
-    // ==================== CONVERSION FUNCTIONS ====================
-    
-    /**
-     * @brief Converts positions to intervals
-     * @return IntervalVector derived from current positions
-     */
-    IntervalVector positionsToIntervals(PositionVector positions) {
-        int mod = positions.getMod();
-        if (positions.size() == 0) {
-            return IntervalVector({}, 0, mod);
-        }
-        
-        vector<int> posData = positions.getData();
-        vector<int> intervalData;
-        
-        if (posData.size() > 1) {
-            for (size_t i = 0; i < posData.size(); ++i) {
-                intervalData.push_back(positions[i+1] - positions[i]);
-            }
-        }
-        
-        return IntervalVector(intervalData, positions[0], mod);
-    }
-    
-    
-    /**
-     * @brief Converts intervals to positions
-     * @return PositionVector derived from current intervals
-     */
-    PositionVector intervalsToPositions(IntervalVector intervals) {
-        int mod = intervals.getMod();
-        vector<int> intervalData = intervals.getData();
-        
-        if (intervalData.empty()) {
-            return PositionVector({0}, mod, 0, true, false);
-        }
-        
-        // Calculate positions from intervals (starting from offset)
-        vector<int> posData;
-        int currentPos = intervals.getOffset(); 
-        posData.push_back(currentPos);
-        
-        for (size_t i = 0; i < intervalData.size() - 1; ++i) {  
-            currentPos += intervalData[i];
-            posData.push_back(currentPos);
-        }
-        
-        return PositionVector(posData, mod, 0, true, false);
-    }
+
     
     
 
-#endif // Vectors_H
+#endif // Vector_H
