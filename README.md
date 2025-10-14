@@ -68,7 +68,7 @@ README.md
 ### Scale Class
 - **Scale**: Encapsulates musical scales, supporting construction from positions or intervals, and transformations such as transposition, mode, inversion, and mirroring.
 
-## Example Applications
+## Applications
 
 - **Algorithmic composition**: Generate and transform scales, chords, and rhythms for generative music systems.
 - **Music analysis**: Compute distances, similarities, and transformations between musical objects.
@@ -78,9 +78,21 @@ README.md
 
 ## Getting Started
 
-1. Clone the repository and include the `src/` directory in your C++ project.
-2. See the `examples/` directory for usage demonstrations and test cases.
-3. Each header is self-contained and can be included as needed.
+
+## Documentation (Doxygen)
+
+This project uses [Doxygen](https://www.doxygen.nl/) to generate API documentation from source code comments.
+
+### To generate documentation:
+
+1. Make sure Doxygen is installed (`doxygen --version` should work in your terminal).
+2. From the project root, run:
+	```sh
+	doxygen Doxyfile
+	```
+3. The generated HTML documentation will be in the `vectors/docs/html` directory. Open `vectors/docs/html/index.html` in your browser.
+
+All public classes, functions, and files are documented using Doxygen-style comments in the source code.
 
 ## License
 
