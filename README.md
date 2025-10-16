@@ -23,7 +23,8 @@ src/
 	distances.h           # Distance and transformation functions for vectors
 	intervalVector.h      # IntervalVector class for intervallic structures
 	mathUtil.h            # Mathematical utilities (GCD, LCM, Euclidean division)
-	matrix.h              # Matrix operations (modal, transposition, rototranslation)
+	matrixDistance.h      # Classes and methods for distance calculation between vectors and matrices
+	matrix.h              # Classes and methods for modal, modal selection, rototranslation and transposition matrices
 	positionVector.h      # PositionVector class for pitch/position sets
 	rhythmGen.h           # Rhythmic pattern generators
 	scale.h               # Scale class for musical scales and transformations
@@ -35,7 +36,8 @@ examples/
 	chordTest.cpp         # Chord generation and selection examples
 	classtest.cpp         # Class tests for IntervalVector, BinaryVector, PositionVector
 	distances.cpp         # Distance and transformation examples
-	matrix.cpp            # Matrix operations and modal analysis
+	matrixDistances.cpp   # Examples of distances between vectors and matrices
+	matrix.cpp            # Matrix examples
 	rhythmGen.cpp         # Rhythmic pattern generation examples
 	scale.cpp             # Scale class usage and transformations
 	selection.cpp         # Selection meta-operators demonstration
@@ -70,9 +72,6 @@ README.md
 
 
 ## TODO
-- **Distances between vectors and rows of matrices**
-- **Complexity vectors**
-- **Extraction of vectors by their distance, cost function minimization**
 - **Voicing, degree, modal interchange, modulation automation**
 - **Rhythmic subdivision priority grid**
 - **Chord class abstraction**
@@ -89,6 +88,16 @@ README.md
 1. Clone the repository and include the `src/` directory in your C++ project.
 2. See the `examples/` directory for usage demonstrations and test cases.
 3. Each header is self-contained and can be included as needed.
+
+Quick build/run (Windows, msys2/mingw or similar):
+
+```powershell
+# compile one example (adjust include path if needed)
+g++ -g examples/matrixDistances.cpp -I src -o examples/matrixDistances.exe
+
+# run it
+.\examples\matrixDistances.exe
+```
 
 ## License
 
