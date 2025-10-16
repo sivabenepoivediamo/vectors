@@ -182,6 +182,40 @@ void testIterators() {
     }
 }
 
+void testFilters(){
+    printSeparator("Testing Filter Functions");
+    // Use C major as source
+    PositionVector cMajor({0,2,4,5,7,9,11}, 12);
+    cout << "Source (C major): " << cMajor << "\n\n";
+
+    // Create modal and transposition matrices
+    ModalMatrix<PositionVector> mm = modalMatrix(cMajor);
+    TranspositionMatrix tm = transpositionMatrix(cMajor);
+
+    cout << "Full Modal Matrix:\n" << mm << "\n";
+    cout << "Full Transposition Matrix:\n" << tm << "\n";
+
+    // Filter by notes (C major triad: 0,4,7)
+    vector<int> notes = {63};
+    cout << "Filtering for notes: [63]\n\n";
+
+    // Non-destructive filtering
+    ModalMatrix<PositionVector> modalFiltered = filterModalMatrix(mm, notes);
+    TranspositionMatrix transFiltered = filterTranspositionMatrix(tm, notes);
+
+    cout << "Modal Matrix (filtered, non-destructive):\n" << modalFiltered << "\n";
+    cout << "Transposition Matrix (filtered, non-destructive):\n" << transFiltered << "\n";
+
+    // In-place filtering
+    ModalMatrix<PositionVector> mmCopy = mm;
+    TranspositionMatrix tmCopy = tm;
+    filterModalMatrixInPlace(mmCopy, notes);
+    filterTranspositionMatrixInPlace(tmCopy, notes);
+
+    cout << "Modal Matrix (after in-place filter):\n" << mmCopy << "\n";
+    cout << "Transposition Matrix (after in-place filter):\n" << tmCopy << "\n";
+}
+
 int main() {
     cout << "\n";
     cout << "╔═══════════════════════════════════════════════════════════╗\n";
@@ -197,6 +231,7 @@ int main() {
         testModalSelectionPositionVector();
         testModalRototranslation();
         testIterators();
+        testFilters();
         
         printSeparator("ALL TESTS COMPLETED SUCCESSFULLY");
         cout << "\n✓ All matrix classes working correctly!\n\n";

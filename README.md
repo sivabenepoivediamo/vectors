@@ -71,6 +71,7 @@ README.md
 - **Scale**: Encapsulates musical scales, supporting construction from positions or intervals, and transformations such as transposition, mode, inversion, and mirroring.
 
 
+
 ## TODO
 - **Voicing, degree, modal interchange, modulation automation**
 - **Rhythmic subdivision priority grid**

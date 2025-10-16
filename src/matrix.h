@@ -540,5 +540,133 @@ ModalRototranslationMatrix<PositionVector> modalRototranslation(
     return ModalRototranslationMatrix<PositionVector>(result);
 }
 
+/**
+ * @brief Filters a ModalMatrix<PositionVector> to keep only rows containing all specified MIDI notes
+ * @param matrix Input ModalMatrix<PositionVector>
+ * @param notes Vector of MIDI note numbers to check for
+ * @return ModalMatrix<PositionVector> with only rows containing all specified notes (mod checked)
+ * @details Checks if each row's PositionVector contains all notes in the notes vector,
+ *          comparing modulo the PositionVector's modulo value.
+ */
+ModalMatrix<PositionVector> filterModalMatrix(
+    const ModalMatrix<PositionVector>& matrix, 
+    const vector<int>& notes)
+{
+    if (notes.empty()) {
+        return matrix; // No filtering if no notes specified
+    }
+    
+    vector<pair<PositionVector, int>> filtered;
+    
+    for (size_t i = 0; i < matrix.size(); ++i) {
+        const PositionVector& pv = matrix[i].first;
+        int mode_idx = matrix[i].second;
+        int mod = pv.getMod();
+        
+        // Check if this row contains all required notes (modulo mod)
+        bool contains_all = true;
+        for (int note : notes) {
+            int note_mod = ((note % mod) + mod) % mod; // Euclidean modulo
+            
+            // Check if note_mod exists in this PositionVector
+            bool found = false;
+            for (int pos : pv.data) {
+                if (((pos % mod) + mod) % mod == note_mod) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                contains_all = false;
+                break;
+            }
+        }
+        
+        if (contains_all) {
+            filtered.push_back(make_pair(pv, mode_idx));
+        }
+    }
+    
+    return ModalMatrix<PositionVector>(filtered);
+}
+
+/**
+ * @brief Filters a TranspositionMatrix to keep only rows containing all specified MIDI notes
+ * @param matrix Input TranspositionMatrix
+ * @param notes Vector of MIDI note numbers to check for
+ * @return TranspositionMatrix with only rows containing all specified notes (mod checked)
+ * @details Checks if each row's PositionVector contains all notes in the notes vector,
+ *          comparing modulo the PositionVector's modulo value.
+ */
+TranspositionMatrix filterTranspositionMatrix(
+    const TranspositionMatrix& matrix, 
+    const vector<int>& notes)
+{
+    if (notes.empty()) {
+        return matrix; // No filtering if no notes specified
+    }
+    
+    vector<pair<PositionVector, int>> filtered;
+    
+    for (size_t i = 0; i < matrix.size(); ++i) {
+        const PositionVector& pv = matrix[i].first;
+        int trans_idx = matrix[i].second;
+        int mod = pv.getMod();
+        
+        // Check if this row contains all required notes (modulo mod)
+        bool contains_all = true;
+        for (int note : notes) {
+            int note_mod = ((note % mod) + mod) % mod; // Euclidean modulo
+            
+            // Check if note_mod exists in this PositionVector
+            bool found = false;
+            for (int pos : pv.data) {
+                if (((pos % mod) + mod) % mod == note_mod) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                contains_all = false;
+                break;
+            }
+        }
+        
+        if (contains_all) {
+            filtered.push_back(make_pair(pv, trans_idx));
+        }
+    }
+    
+    return TranspositionMatrix(filtered);
+}
+
+/**
+ * @brief In-place filters a ModalMatrix<PositionVector> to keep only rows containing all specified MIDI notes
+ * @param matrix ModalMatrix<PositionVector> to be modified
+ * @param notes Vector of MIDI note numbers to check for
+ * @details Modifies the input matrix in place, removing rows that don't contain all specified notes.
+ */
+void filterModalMatrixInPlace(
+    ModalMatrix<PositionVector>& matrix, 
+    const vector<int>& notes)
+{
+    matrix = filterModalMatrix(matrix, notes);
+}
+
+/**
+ * @brief In-place filters a TranspositionMatrix to keep only rows containing all specified MIDI notes
+ * @param matrix TranspositionMatrix to be modified
+ * @param notes Vector of MIDI note numbers to check for
+ * @details Modifies the input matrix in place, removing rows that don't contain all specified notes.
+ */
+void filterTranspositionMatrixInPlace(
+    TranspositionMatrix& matrix, 
+    const vector<int>& notes)
+{
+    matrix = filterTranspositionMatrix(matrix, notes);
+}
+
 
 #endif // MATRIX_H

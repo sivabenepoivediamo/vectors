@@ -31,7 +31,7 @@ public:
         : vector_(vec), index_(idx), distance_(dist) {}
     
     // Construct from tuple
-    explicit ModalMatrixRow(const tuple<T, int, double>& t)
+    ModalMatrixRow(const tuple<T, int, double>& t)
         : vector_(get<0>(t)), index_(get<1>(t)), distance_(get<2>(t)) {}
     
     // Accessors
