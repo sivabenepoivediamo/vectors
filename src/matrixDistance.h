@@ -290,7 +290,7 @@ public:
         vector<T> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<0>(row));
+            result.emplace_back(get<0>(row));
         }
         return result;
     }
@@ -300,7 +300,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<1>(row));
+            result.emplace_back(get<1>(row));
         }
         return result;
     }
@@ -310,7 +310,7 @@ public:
         vector<double> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<2>(row));
+            result.emplace_back(get<2>(row));
         }
         return result;
     }
@@ -401,7 +401,7 @@ public:
         vector<PositionVector> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<0>(row));
+            result.emplace_back(get<0>(row));
         }
         return result;
     }
@@ -411,7 +411,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<1>(row));
+            result.emplace_back(get<1>(row));
         }
         return result;
     }
@@ -421,7 +421,7 @@ public:
         vector<double> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<2>(row));
+            result.emplace_back(get<2>(row));
         }
         return result;
     }
@@ -510,7 +510,7 @@ public:
         vector<PositionVector> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<0>(row));
+            result.emplace_back(get<0>(row));
         }
         return result;
     }
@@ -520,7 +520,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<1>(row));
+            result.emplace_back(get<1>(row));
         }
         return result;
     }
@@ -530,7 +530,7 @@ public:
         vector<double> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<2>(row));
+            result.emplace_back(get<2>(row));
         }
         return result;
     }
@@ -617,7 +617,7 @@ public:
         vector<T> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<0>(row));
+            result.emplace_back(get<0>(row));
         }
         return result;
     }
@@ -627,7 +627,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<1>(row));
+            result.emplace_back(get<1>(row));
         }
         return result;
     }
@@ -637,7 +637,7 @@ public:
         vector<double> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<2>(row));
+            result.emplace_back(get<2>(row));
         }
         return result;
     }
@@ -710,7 +710,7 @@ ModalMatrixDistance<PositionVector> calculateDistances(
     for (size_t i = 0; i < matrix.size(); ++i) {
         const auto& [vec, idx] = matrix[i];
         double dist = distFunc(reference, vec);
-        result.push_back(make_tuple(vec, idx, dist));
+        result.emplace_back(make_tuple(vec, idx, dist));
     }
     
     auto mmd = ModalMatrixDistance<PositionVector>(result);
@@ -740,7 +740,7 @@ ModalMatrixDistance<IntervalVector> calculateDistances(
     for (size_t i = 0; i < matrix.size(); ++i) {
         const auto& [vec, idx] = matrix[i];
         double dist = distFunc(reference, vec);
-        result.push_back(make_tuple(vec, idx, dist));
+        result.emplace_back(make_tuple(vec, idx, dist));
     }
     
     auto mmd = ModalMatrixDistance<IntervalVector>(result);
@@ -770,7 +770,7 @@ TranspositionMatrixDistance calculateDistances(
     for (size_t i = 0; i < matrix.size(); ++i) {
         const auto& [vec, idx] = matrix[i];
         double dist = distFunc(reference, vec);
-        result.push_back(make_tuple(vec, idx, dist));
+        result.emplace_back(make_tuple(vec, idx, dist));
     }
     
     auto tmd = TranspositionMatrixDistance(result);
@@ -800,7 +800,7 @@ RototranslationMatrixDistance calculateDistances(
     for (size_t i = 0; i < matrix.size(); ++i) {
         const auto& [vec, idx] = matrix[i];
         double dist = distFunc(reference, vec);
-        result.push_back(make_tuple(vec, idx, dist));
+        result.emplace_back(make_tuple(vec, idx, dist));
     }
     
     auto rmd = RototranslationMatrixDistance(result, matrix.getCenter());
@@ -830,7 +830,7 @@ ModalSelectionMatrixDistance<PositionVector> calculateDistances(
     for (size_t i = 0; i < matrix.size(); ++i) {
         const auto& [vec, idx] = matrix[i];
         double dist = distFunc(reference, vec);
-        result.push_back(make_tuple(vec, idx, dist));
+        result.emplace_back(make_tuple(vec, idx, dist));
     }
     
     auto mmd = ModalSelectionMatrixDistance<PositionVector>(result);
@@ -860,7 +860,7 @@ ModalSelectionMatrixDistance<IntervalVector> calculateDistances(
     for (size_t i = 0; i < matrix.size(); ++i) {
         const auto& [vec, idx] = matrix[i];
         double dist = distFunc(reference, vec);
-        result.push_back(make_tuple(vec, idx, dist));
+        result.emplace_back(make_tuple(vec, idx, dist));
     }
     
     auto mmd = ModalSelectionMatrixDistance<IntervalVector>(result);
@@ -930,7 +930,7 @@ public:
         vector<PositionVector> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<2>(row));
+            result.emplace_back(get<2>(row));
         }
         return result;
     }
@@ -940,7 +940,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<0>(row));
+            result.emplace_back(get<0>(row));
         }
         return result;
     }
@@ -950,7 +950,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<1>(row));
+            result.emplace_back(get<1>(row));
         }
         return result;
     }
@@ -960,7 +960,7 @@ public:
         vector<double> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(get<3>(row));
+            result.emplace_back(get<3>(row));
         }
         return result;
     }
@@ -1027,7 +1027,7 @@ ModalRototranslationMatrixDistance calculateDistances(
         for (size_t j = 0; j < rtm.size(); ++j) {
             const auto& [vec, trans_idx] = rtm[j];
             double dist = distFunc(reference, vec);
-            result.push_back(make_tuple(mode_idx, trans_idx, vec, dist));
+            result.emplace_back(make_tuple(mode_idx, trans_idx, vec, dist));
         }
     }
     

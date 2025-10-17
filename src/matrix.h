@@ -64,7 +64,7 @@ public:
         vector<T> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.first);
+            result.emplace_back(row.first);
         }
         return result;
     }
@@ -74,7 +74,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.second);
+            result.emplace_back(row.second);
         }
         return result;
     }
@@ -126,7 +126,7 @@ public:
         vector<PositionVector> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.first);
+            result.emplace_back(row.first);
         }
         return result;
     }
@@ -136,7 +136,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.second);
+            result.emplace_back(row.second);
         }
         return result;
     }
@@ -196,7 +196,7 @@ public:
         vector<PositionVector> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.first);
+            result.emplace_back(row.first);
         }
         return result;
     }
@@ -206,7 +206,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.second);
+            result.emplace_back(row.second);
         }
         return result;
     }
@@ -263,7 +263,7 @@ public:
         vector<T> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.first);
+            result.emplace_back(row.first);
         }
         return result;
     }
@@ -273,7 +273,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.second);
+            result.emplace_back(row.second);
         }
         return result;
     }
@@ -330,7 +330,7 @@ public:
         vector<RototranslationMatrix> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.first);
+            result.emplace_back(row.first);
         }
         return result;
     }
@@ -340,7 +340,7 @@ public:
         vector<int> result;
         result.reserve(data_.size());
         for (const auto& row : data_) {
-            result.push_back(row.second);
+            result.emplace_back(row.second);
         }
         return result;
     }
@@ -380,7 +380,7 @@ ModalMatrix<IntervalVector> modalMatrix(IntervalVector iv) {
     
     for (int i = 0; i < n; ++i) {
         IntervalVector rotated = iv.rotate(i);
-        matrix.push_back(make_pair(rotated, i));
+        matrix.emplace_back(make_pair(rotated, i));
     }
     
     return ModalMatrix<IntervalVector>(matrix);
@@ -402,7 +402,7 @@ RototranslationMatrix rototranslationMatrix(PositionVector& in, int center) {
 
     for (int i = center - n; i < center + n+1; i++) {
         PositionVector row = in.rotoTranslate(i);
-        matrix.push_back(make_pair(row, i));
+        matrix.emplace_back(make_pair(row, i));
     }
     return RototranslationMatrix(matrix, center);
 }
@@ -425,7 +425,7 @@ ModalMatrix<PositionVector> modalMatrix(PositionVector pv) {
     pvMatrix.reserve(ivMatrix.size());
     for (size_t i = 0; i < ivMatrix.size(); ++i) {
         PositionVector posVec = intervalsToPositions(ivMatrix[i].first);
-        pvMatrix.push_back(make_pair(posVec, ivMatrix[i].second));
+        pvMatrix.emplace_back(make_pair(posVec, ivMatrix[i].second));
     }
 
     return ModalMatrix<PositionVector>(pvMatrix);
@@ -449,7 +449,7 @@ TranspositionMatrix transpositionMatrix(PositionVector pv) {
     for (int i = 0; i < n; ++i) {
         PositionVector transposed = (pv + i) % n;
         sort(transposed.data.begin(), transposed.data.end());
-        matrix.push_back(make_pair(transposed, i));
+        matrix.emplace_back(make_pair(transposed, i));
     }
     
     return TranspositionMatrix(matrix);
@@ -478,7 +478,7 @@ ModalSelectionMatrix<IntervalVector> modalSelection(IntervalVector source, Inter
         }
         DivisionResult div = euclideanDivision(degree - sum, source.size());
         int g = div.remainder;
-        selection.push_back(make_pair(candidate, g));
+        selection.emplace_back(make_pair(candidate, g));
     }
     return ModalSelectionMatrix<IntervalVector>(selection);
 }
@@ -510,7 +510,7 @@ ModalSelectionMatrix<PositionVector> modalSelection(PositionVector source, Inter
         }
         DivisionResult div = euclideanDivision(degree - sum, source.size());
         int g = div.remainder;
-        selection.push_back(make_pair(pc, g));
+        selection.emplace_back(make_pair(pc, g));
     }
     return ModalSelectionMatrix<PositionVector>(selection);
 }
@@ -534,7 +534,7 @@ ModalRototranslationMatrix<PositionVector> modalRototranslation(
         const auto& [chord, mode_idx] = selection[i];
         PositionVector pv = chord; // Make a copy since rototranslationMatrix takes non-const ref
         RototranslationMatrix rtm = rototranslationMatrix(pv, 0);
-        result.push_back(make_pair(rtm, mode_idx));
+        result.emplace_back(make_pair(rtm, mode_idx));
     }
     
     return ModalRototranslationMatrix<PositionVector>(result);
@@ -584,7 +584,7 @@ ModalMatrix<PositionVector> filterModalMatrix(
         }
         
         if (contains_all) {
-            filtered.push_back(make_pair(pv, mode_idx));
+            filtered.emplace_back(make_pair(pv, mode_idx));
         }
     }
     
@@ -635,7 +635,7 @@ TranspositionMatrix filterTranspositionMatrix(
         }
         
         if (contains_all) {
-            filtered.push_back(make_pair(pv, trans_idx));
+            filtered.emplace_back(make_pair(pv, trans_idx));
         }
     }
     

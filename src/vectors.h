@@ -24,10 +24,11 @@
         
         vector<int> posData = positions.getData();
         vector<int> intervalData;
+        intervalData.reserve(position.size());
         
         if (posData.size() > 1) {
             for (size_t i = 0; i < posData.size(); ++i) {
-                intervalData.push_back(positions[i+1] - positions[i]);
+                intervalData.emplace_back(positions[i+1] - positions[i]);
             }
         }
         
@@ -49,12 +50,13 @@
         
         // Calculate positions from intervals (starting from offset)
         vector<int> posData;
+        posData.reserve(intervals.size());
         int currentPos = intervals.getOffset(); 
-        posData.push_back(currentPos);
+        posData.emplace_back(currentPos);
         
         for (size_t i = 0; i < intervalData.size() - 1; ++i) {  
             currentPos += intervalData[i];
-            posData.push_back(currentPos);
+            posData.emplace_back(currentPos);
         }
         
         return PositionVector(posData, mod, 0, true, false);

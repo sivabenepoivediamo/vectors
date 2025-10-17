@@ -169,7 +169,7 @@ vector<pair<int, pair<int, int>>> transformationSteps(const vector<int>& start, 
     for (int i = 0; i < minLength; ++i) {
         int diff = end[i] - start[i];
         if (diff != 0) {
-            steps.push_back({0, {i, diff}});
+            steps.emplace_back({0, {i, diff}});
             vector<int> transformed = generalizedNeoRiemann(start, i, diff);
             vector<pair<int, pair<int, int>>> substeps = transformationSteps(transformed, end);
             steps.insert(steps.end(), substeps.begin(), substeps.end());
@@ -179,14 +179,14 @@ vector<pair<int, pair<int, int>>> transformationSteps(const vector<int>& start, 
     
     if (endLength > startLength) {
         for (int i = minLength; i < endLength; ++i) {
-            steps.push_back({1, {addedPosition, end[i]}});
+            steps.emplace_back({1, {addedPosition, end[i]}});
             addedPosition++;
         }
     }
     
     if (endLength < startLength) {
         for (int i = minLength; i < startLength; ++i) {
-            steps.push_back({2, {i, start[i]}});
+            steps.emplace_back({2, {i, start[i]}});
         }
     }
     

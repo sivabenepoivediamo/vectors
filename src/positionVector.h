@@ -820,7 +820,7 @@ public:
             
             PositionVector adaptedPV(scaledData, lcm, scaledUserRange, false, pv.user);
             adaptedPV.setRange(scaledRange);
-            adaptedVectors.push_back(adaptedPV);
+            adaptedVectors.emplace_back(adaptedPV);
         }
         
         return adaptedVectors;
@@ -905,7 +905,7 @@ public:
         vector<int> complementData;
         for (int i = 0; i < effectiveRange; ++i) {
             if (normalizedSet.find(i) == normalizedSet.end()) {
-                complementData.push_back(i);
+                complementData.emplace_back(i);
             }
         }
 
@@ -1031,22 +1031,22 @@ public:
             for (size_t i = 0; i < maxLength; ++i) {
                 int component1 = data[i % data.size()];
                 int component2 = other[i % other.size()];
-                result.push_back(component1 + component2);
+                result.emplace_back(component1 + component2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] + other[i]);
+                result.emplace_back(data[i] + other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -1075,22 +1075,22 @@ public:
             for (size_t i = 0; i < maxLength; ++i) {
                 int component1 = data[i % data.size()];
                 int component2 = other[i % other.size()];
-                result.push_back(component1 - component2);
+                result.emplace_back(component1 - component2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] - other[i]);
+                result.emplace_back(data[i] - other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -1120,22 +1120,22 @@ public:
             for (size_t i = 0; i < maxLength; ++i) {
                 int component1 = data[i % data.size()];
                 int component2 = other[i % other.size()];
-                result.push_back(component1 * component2);
+                result.emplace_back(component1 * component2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] * other[i]);
+                result.emplace_back(data[i] * other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -1174,7 +1174,7 @@ public:
                 int dividend = data[i % data.size()];
                 int divisor = other[i % other.size()];
                 DivisionResult div = euclideanDivision(dividend, divisor);
-                result.push_back(div.quotient);
+                result.emplace_back(div.quotient);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
@@ -1182,15 +1182,15 @@ public:
             
             for (size_t i = 0; i < minLength; ++i) {
                 DivisionResult div = euclideanDivision(data[i], other[i]);
-                result.push_back(div.quotient);
+                result.emplace_back(div.quotient);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -1229,7 +1229,7 @@ public:
                 int dividend = data[i % data.size()];
                 int divisor = other[i % other.size()];
                 DivisionResult div = euclideanDivision(dividend, divisor);
-                result.push_back(div.remainder);
+                result.emplace_back(div.remainder);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
@@ -1237,15 +1237,15 @@ public:
             
             for (size_t i = 0; i < minLength; ++i) {
                 DivisionResult div = euclideanDivision(data[i], other[i]);
-                result.push_back(div.remainder);
+                result.emplace_back(div.remainder);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -1303,7 +1303,7 @@ public:
         
         for (int t = 0; t < times; ++t) {
             for (size_t i = 0; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
         }
         
@@ -1335,7 +1335,7 @@ public:
             resizedData.reserve(length);
             
             for (int i = start; i <= end; ++i) {
-                resizedData.push_back((*this)[i]);
+                resizedData.emplace_back((*this)[i]);
             }
         } else {
             // Descending range: from start to end inclusive (backwards)
@@ -1343,7 +1343,7 @@ public:
             resizedData.reserve(length);
             
             for (int i = start; i >= end; --i) {
-                resizedData.push_back((*this)[i]);
+                resizedData.emplace_back((*this)[i]);
             }
         }
         

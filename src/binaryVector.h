@@ -109,9 +109,9 @@ public:
         result.reserve(data.size() * scalar);
 
         for (int val : data) {
-            result.push_back(val);
+            result.emplace_back(val);
             for (int i = 1; i < scalar; ++i) {
-                result.push_back(0);
+                result.emplace_back(0);
             }
         }
 
@@ -144,10 +144,10 @@ BinaryVector operator/(int divisor) const {
             // Output compressed zeros before this pulse
             int compressedZeroCount = consecutiveZeros / divisor;
             for (int j = 0; j < compressedZeroCount; ++j) {
-                compressed.push_back(0);
+                compressed.emplace_back(0);
             }
             // Output the pulse
-            compressed.push_back(1);
+            compressed.emplace_back(1);
             consecutiveZeros = 0;
         } else {
             consecutiveZeros++;
@@ -157,12 +157,12 @@ BinaryVector operator/(int divisor) const {
     // Handle trailing zeros
     int compressedTrailingZeros = consecutiveZeros / divisor;
     for (int j = 0; j < compressedTrailingZeros; ++j) {
-        compressed.push_back(0);
+        compressed.emplace_back(0);
     }
     
     // Pad with zeros to maintain original length
     while (compressed.size() < data.size()) {
-        compressed.push_back(0);
+        compressed.emplace_back(0);
     }
     
     // Truncate if somehow longer (shouldn't happen, but safety check)
@@ -203,22 +203,22 @@ BinaryVector operator/(int divisor) const {
             for (size_t i = 0; i < maxLength; ++i) {
                 int val1 = data[i % data.size()];
                 int val2 = other[i % other.size()];
-                result.push_back(val1 | val2);
+                result.emplace_back(val1 | val2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] | other[i]);
+                result.emplace_back(data[i] | other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -244,22 +244,22 @@ BinaryVector operator/(int divisor) const {
             for (size_t i = 0; i < maxLength; ++i) {
                 int val1 = data[i % data.size()];
                 int val2 = other[i % other.size()];
-                result.push_back(val1 & val2);
+                result.emplace_back(val1 & val2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] & other[i]);
+                result.emplace_back(data[i] & other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -285,22 +285,22 @@ BinaryVector operator/(int divisor) const {
             for (size_t i = 0; i < maxLength; ++i) {
                 int val1 = data[i % data.size()];
                 int val2 = other[i % other.size()];
-                result.push_back(val1 ^ val2);
+                result.emplace_back(val1 ^ val2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] ^ other[i]);
+                result.emplace_back(data[i] ^ other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -472,14 +472,14 @@ BinaryVector operator/(int divisor) const {
             spacedData.reserve(bv.data.size() * scaleFactor);
 
             for (int val : bv.data) {
-                spacedData.push_back(val);
+                spacedData.emplace_back(val);
                 for (int i = 1; i < scaleFactor; ++i) {
-                    spacedData.push_back(0);
+                    spacedData.emplace_back(0);
                 }
             }
 
             BinaryVector adaptedBV(spacedData, bv.offset, lcm);
-            adaptedVectors.push_back(adaptedBV);
+            adaptedVectors.emplace_back(adaptedBV);
         }
 
         return adaptedVectors;
@@ -501,10 +501,10 @@ BinaryVector operator/(int divisor) const {
         
         // Initialize with pulses and silences
         for (int i = 0; i < pulses; ++i) {
-            groups.push_back({1});
+            groups.emplace_back({1});
         }
         for (int i = 0; i < steps - pulses; ++i) {
-            groups.push_back({0});
+            groups.emplace_back({0});
         }
 
         // Bjorklund's algorithm
@@ -660,7 +660,7 @@ BinaryVector operator/(int divisor) const {
         vector<int> indices;
         for (size_t i = 0; i < data.size(); ++i) {
             if (data[i] == 1) {
-                indices.push_back(static_cast<int>(i));
+                indices.emplace_back(static_cast<int>(i));
             }
         }
         return indices;
@@ -678,11 +678,11 @@ BinaryVector operator/(int divisor) const {
 
         vector<int> intervals;
         for (size_t i = 1; i < indices.size(); ++i) {
-            intervals.push_back(indices[i] - indices[i-1]);
+            intervals.emplace_back(indices[i] - indices[i-1]);
         }
         
         // Add wraparound interval
-        intervals.push_back(static_cast<int>(data.size()) - indices.back() + indices[0]);
+        intervals.emplace_back(static_cast<int>(data.size()) - indices.back() + indices[0]);
         
         return intervals;
     }

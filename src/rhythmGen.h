@@ -23,19 +23,20 @@
  */
 vector<int> euclidean(int steps, int events) {
     vector<int> out;
+    out.reserve(events);
     DivisionResult div = euclideanDivision(steps, events);
     if (div.remainder == 0) {
             for (int i = 0; i < events; i++) {
-            out.push_back(div.quotient);
+            out.emplace_back(div.quotient);
         }
     } else {
         int a = div.remainder;
         vector<int> x = euclidean(events, a);
         for (int i = 0; i < a; i++) {
             for (int j = 0; j < x[i] - 1; j++) {
-                out.push_back(div.quotient);
+                out.emplace_back(div.quotient);
             }
-            out.push_back(div.quotient + 1);
+            out.emplace_back(div.quotient + 1);
         }
     }
 
@@ -50,9 +51,10 @@ vector<int> euclidean(int steps, int events) {
  * 
  */
 vector<int> CloughDouthett(int steps, int events) {
-    std::vector<int> out;
+    vector<int> out;
+    out.reserve(events);
     for (int i = 0; i < events; i++) {
-        out.push_back(static_cast<int>(floor(i * steps / static_cast<double>(events))));
+        out.emplace_back(static_cast<int>(floor(i * steps / static_cast<double>(events))));
     }
     return out;
 }
@@ -67,8 +69,9 @@ vector<int> CloughDouthett(int steps, int events) {
  */
 vector<int> deepRhythm(int steps, int events, int multiplicity) {
     vector<int> out;
+    out.reserve(events);
     for (int i = 0; i < events; i++) {
-        out.push_back((i * multiplicity) % steps);
+        out.emplace_back((i * multiplicity) % steps);
     }
     sort(out.begin(), out.end());
 
@@ -171,18 +174,19 @@ pair<int, int> tihaiGenerator(int steps, int repetitions) {
  *          If the resulting pattern is all silences or all onsets and pseudo is true,
  *          it generates a shorter Tihai pattern and pads it with onsets to maintain the original length.
  */
-vector<int> tihaiReader(int b, int d, int m) {
+vector<int> tihaiReader(int b, int d, int m, steps) {
     vector<int> out;
+    out.reserve(steps);
     
-    for (int i = 0; i < b; i++) out.push_back(1);
-    for (int i = 0; i < d; i++) out.push_back(0);
+    for (int i = 0; i < b; i++) out.emplace_back(1);
+    for (int i = 0; i < d; i++) out.emplace_back(0);
     
     for (int i = 0; i < m - 2; i++) {
-        for (int j = 0; j < b; j++) out.push_back(1);
-        for (int j = 0; j < d; j++) out.push_back(0);
+        for (int j = 0; j < b; j++) out.emplace_back(1);
+        for (int j = 0; j < d; j++) out.emplace_back(0);
     }
     
-    for (int i = 0; i < b; i++) out.push_back(1);
+    for (int i = 0; i < b; i++) out.emplace_back(1);
     
     return out;
 }
@@ -214,7 +218,7 @@ bool isAllOnes(const vector<int>& vec) {
  */
 void appendOnes(vector<int>& vec, int targetSize) {
     while (static_cast<int>(vec.size()) < targetSize) {
-        vec.push_back(1);
+        vec.emplace_back(1);
     }
 }
 /**
@@ -250,7 +254,7 @@ vector<int> tihai(int steps, int repetitions, bool pseudo) {
         return vector<int>(steps, 0);
     } else {
         auto [bols, dams] = tihaiGenerator(steps, repetitions);
-        vector<int> pattern = tihaiReader(bols, dams, repetitions);
+        vector<int> pattern = tihaiReader(bols, dams, repetitions, steps);
         
         if (((isAllZeros(pattern) && pseudo) || isAllOnes(pattern)) && pseudo) {
             vector<int> shorterPattern = tihai(steps - 1, repetitions, pseudo);

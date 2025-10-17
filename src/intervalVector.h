@@ -758,22 +758,22 @@ public:
             for (size_t i = 0; i < maxLength; ++i) {
                 int component1 = data[i % data.size()];
                 int component2 = other[i % other.size()];
-                result.push_back(component1 + component2);
+                result.emplace_back(component1 + component2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] + other[i]);
+                result.emplace_back(data[i] + other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -800,22 +800,22 @@ public:
             for (size_t i = 0; i < maxLength; ++i) {
                 int component1 = data[i % data.size()];
                 int component2 = other[i % other.size()];
-                result.push_back(component1 - component2);
+                result.emplace_back(component1 - component2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] - other[i]);
+                result.emplace_back(data[i] - other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -842,22 +842,22 @@ public:
             for (size_t i = 0; i < maxLength; ++i) {
                 int component1 = data[i % data.size()];
                 int component2 = other[i % other.size()];
-                result.push_back(component1 * component2);
+                result.emplace_back(component1 * component2);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
             result.reserve(max(data.size(), other.size()));
             
             for (size_t i = 0; i < minLength; ++i) {
-                result.push_back(data[i] * other[i]);
+                result.emplace_back(data[i] * other[i]);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -894,7 +894,7 @@ public:
                 int dividend = data[i % data.size()];
                 int divisor = other[i % other.size()];
                 DivisionResult div = euclideanDivision(dividend, divisor);
-                result.push_back(div.quotient);
+                result.emplace_back(div.quotient);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
@@ -902,15 +902,15 @@ public:
             
             for (size_t i = 0; i < minLength; ++i) {
                 DivisionResult div = euclideanDivision(data[i], other[i]);
-                result.push_back(div.quotient);
+                result.emplace_back(div.quotient);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -947,7 +947,7 @@ public:
                 int dividend = data[i % data.size()];
                 int divisor = other[i % other.size()];
                 DivisionResult div = euclideanDivision(dividend, divisor);
-                result.push_back(div.remainder);
+                result.emplace_back(div.remainder);
             }
         } else {
             size_t minLength = min(data.size(), other.size());
@@ -955,15 +955,15 @@ public:
             
             for (size_t i = 0; i < minLength; ++i) {
                 DivisionResult div = euclideanDivision(data[i], other[i]);
-                result.push_back(div.remainder);
+                result.emplace_back(div.remainder);
             }
             
             for (size_t i = minLength; i < data.size(); ++i) {
-                result.push_back(data[i]);
+                result.emplace_back(data[i]);
             }
             
             for (size_t i = minLength; i < other.size(); ++i) {
-                result.push_back(other[i]);
+                result.emplace_back(other[i]);
             }
         }
         
@@ -1014,7 +1014,7 @@ public:
         for (const IntervalVector& iv : vectors) {
             if (iv.mod == 0) {
                 // If mod is 0, keep the vector unchanged
-                adaptedVectors.push_back(iv);
+                adaptedVectors.emplace_back(iv);
                 continue;
             }
             
@@ -1029,7 +1029,7 @@ public:
             // Scale the offset
             int scaledOffset = iv.offset * scaleFactor;
             
-            adaptedVectors.push_back(IntervalVector(scaledData, scaledOffset, lcm));
+            adaptedVectors.emplace_back(IntervalVector(scaledData, scaledOffset, lcm));
         }
         
         return adaptedVectors;
