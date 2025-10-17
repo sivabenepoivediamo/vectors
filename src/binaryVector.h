@@ -501,10 +501,10 @@ BinaryVector operator/(int divisor) const {
         
         // Initialize with pulses and silences
         for (int i = 0; i < pulses; ++i) {
-            groups.emplace_back({1});
+            groups.push_back({1});
         }
         for (int i = 0; i < steps - pulses; ++i) {
-            groups.emplace_back({0});
+            groups.push_back({0});
         }
 
         // Bjorklund's algorithm

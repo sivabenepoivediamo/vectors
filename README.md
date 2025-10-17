@@ -18,6 +18,7 @@
 
 ```
 src/
+	automations.h		  # Automation for voice leading, modulation, modal interchange and degree selection
 	binaryVector.h        # BinaryVector class for binary rhythm patterns
 	chord.h               # Chord generation functions from scales and intervals
 	distances.h           # Distance and transformation functions for vectors
@@ -33,6 +34,7 @@ src/
 	Vector.h              # Vectors class: unified representation (positions, intervals, binary)
 	vectors.h             # Conversion functions between representations
 examples/
+	automations.cpp 	  # Voice leading, modulation, modal interchange, degree selection automation examples
 	chordTest.cpp         # Chord generation and selection examples
 	classtest.cpp         # Class tests for IntervalVector, BinaryVector, PositionVector
 	distances.cpp         # Distance and transformation examples
@@ -41,7 +43,6 @@ examples/
 	rhythmGen.cpp         # Rhythmic pattern generation examples
 	scale.cpp             # Scale class usage and transformations
 	selection.cpp         # Selection meta-operators demonstration
-	tihai.cpp             # Tihai rhythmic pattern generation
 	vectortest.cpp        # Unified Vectors class demonstration
 LICENSE
 README.md
@@ -73,7 +74,6 @@ README.md
 
 
 ## TODO
-- **Voicing, degree, modal interchange, modulation automation**
 - **Rhythmic subdivision priority grid**
 - **Chord class abstraction**
 - **Note naming function**

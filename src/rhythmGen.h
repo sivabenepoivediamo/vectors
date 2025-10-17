@@ -174,7 +174,7 @@ pair<int, int> tihaiGenerator(int steps, int repetitions) {
  *          If the resulting pattern is all silences or all onsets and pseudo is true,
  *          it generates a shorter Tihai pattern and pads it with onsets to maintain the original length.
  */
-vector<int> tihaiReader(int b, int d, int m, steps) {
+vector<int> tihaiReader(int b, int d, int m, int steps) {
     vector<int> out;
     out.reserve(steps);
     

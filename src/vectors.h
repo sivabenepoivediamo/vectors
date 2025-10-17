@@ -24,7 +24,7 @@
         
         vector<int> posData = positions.getData();
         vector<int> intervalData;
-        intervalData.reserve(position.size());
+        intervalData.reserve(positions.size());
         
         if (posData.size() > 1) {
             for (size_t i = 0; i < posData.size(); ++i) {
