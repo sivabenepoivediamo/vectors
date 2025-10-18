@@ -2,6 +2,7 @@
 #define DISTANCES_H
 
 #include "./vectors.h"
+
 /**
  * @file distances.h
  * @brief Functions for calculating distances and transformations between vectors

@@ -15,6 +15,8 @@
 #include <climits>
 #include <limits>
 #include <iomanip>
+#include <optional>
+#include <stdexcept>
 
 using namespace std;
 

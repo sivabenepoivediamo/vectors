@@ -1,11 +1,6 @@
 #ifndef BINARYVECTOR_H
 #define BINARYVECTOR_H
 
-#include <vector>
-#include <iostream>
-#include <algorithm>
-#include <stdexcept>
-#include <set>
 #include "./mathUtil.h"
 
 using namespace std;

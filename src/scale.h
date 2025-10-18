@@ -1,7 +1,7 @@
 #ifndef SCALE_H
 #define SCALE_H
+
 #include "selection.h"
-#include <optional>
 
 /**
  * @file scale.h

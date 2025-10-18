@@ -1,6 +1,5 @@
 #include "./matrixDistance.h"
 
-
 ModalRototranslationMatrixRow degreeAutomation(PositionVector& scale, IntervalVector& criterion, int degree, PositionVector& reference, int complexity = 0){
     ModalSelectionMatrix sel = modalSelection(scale, criterion, degree);
     ModalRototranslationMatrix degrees = modalRototranslation(sel);

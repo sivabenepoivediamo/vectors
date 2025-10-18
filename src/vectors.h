@@ -1,5 +1,6 @@
 #ifndef VECTORS_H
 #define VECTORS_H
+
 #include "./positionVector.h"
 #include "./intervalVector.h"
 #include "./binaryVector.h"

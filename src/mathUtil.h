@@ -1,5 +1,6 @@
 #ifndef MATHUTIL_H
 #define MATHUTIL_H   
+
 #include "./utility.h"
 
 /**

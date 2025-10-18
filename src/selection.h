@@ -3,7 +3,6 @@
 
 #include "./vectors.h"
 
-
 /**
  * @file selection.h
  * @brief Implementation of selection meta-operators for musical structures
