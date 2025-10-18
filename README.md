@@ -72,11 +72,18 @@ README.md
 ### Scale Class
 - **Scale**: Encapsulates musical scales, supporting construction from positions or intervals, and transformations such as transposition, mode, inversion, and mirroring.
 
+### Chord Class
+
+### Automation Functions
+- **Voice Leading**: Computes the best inversion for the transition between two chords, based on a complexity factor.
+-**Degree Selection**: Computes the best degree of a chord in a transition based on a reference intervallic structure and a complexity factor. 
+-**Modal Interchange**: Selection of a mode of the parent scale based on a note vector input and a complexity factor. 
+-**Modulation**: Selection of a transposition of a scale, based on a note vector input and a complexity factor.
+
 
 
 ## TODO
 - **Rhythmic subdivision priority grid**
-- **Note naming function**
 - **Block Chords**
 - **Spread Voicings**
 - **Melody and phrase abstractions**

@@ -23,6 +23,7 @@ struct ChordParams {
     int shift;
     int rotationOrRototrans;
     int preVoices;
+    int position;
     bool invert;
     int axis;
     bool negativeOrMirror;
@@ -32,11 +33,12 @@ struct ChordParams {
     ChordParams(int shift = 0,
                 int rotationOrRototrans = 0,
                 int preVoices = 0,
+                int position = 0,
                 bool invert = false,
                 int axis = 0,
                 bool negativeOrMirror = false,
                 int negativeOrMirrorPos = 0)
-        : shift(shift), rotationOrRototrans(rotationOrRototrans),
+        : shift(shift), rotationOrRototrans(rotationOrRototrans), position(position),
           preVoices(preVoices), invert(invert), axis(axis),
           negativeOrMirror(negativeOrMirror), negativeOrMirrorPos(negativeOrMirrorPos) {}
 
@@ -44,6 +46,7 @@ struct ChordParams {
     ChordParams& withShift(int val) { shift = val; return *this; }
     ChordParams& withRotationOrRototrans(int val) { rotationOrRototrans = val; return *this; }
     ChordParams& withPreVoices(int val) { preVoices = val; return *this; }
+    ChordParams& withPosition(int val) { position = val; return *this; }
     ChordParams& withInvert(bool val) { invert = val; return *this; }
     ChordParams& withAxis(int val) { axis = val; return *this; }
     ChordParams& withNegativeOrMirror(bool val) { negativeOrMirror = val; return *this; }
@@ -99,6 +102,7 @@ private:
         if (params.negativeOrMirror) {
             resultPositions = resultPositions.negative(params.negativeOrMirrorPos);
         }
+        resultPositions = resultPositions.rotoTranslate(params.position);
         isResultPositions = true;
     }
 
@@ -112,6 +116,7 @@ private:
         if (params.negativeOrMirror) {
             resultPositions = resultPositions.negative(params.negativeOrMirrorPos);
         }
+        resultPositions = resultPositions.rotoTranslate(params.position);
         isResultPositions = true;
     }
 
@@ -119,7 +124,7 @@ private:
         PositionVector tempScalePos = intervalsToPositions(scaleIntervals);
         PositionVector offsetDegrees = criterionPositions + params.shift;
         PositionVector tempResult = select(tempScalePos, offsetDegrees, params.rotationOrRototrans, params.preVoices);
-        resultIntervals = positionsToIntervals(tempResult);
+        resultIntervals = positionsToIntervals(tempResult.rotoTranslate(params.position));
         if (params.invert) {
             resultIntervals = resultIntervals.inversion(params.axis);
         }
@@ -135,7 +140,7 @@ private:
         int off = criterionIntervals.getOffset();
         offsetIntervals.setOffset(params.shift + off);
         PositionVector tempResult = select(tempScalePos, offsetIntervals, params.rotationOrRototrans, params.preVoices);
-        resultIntervals = positionsToIntervals(tempResult);
+        resultIntervals = positionsToIntervals(tempResult.rotoTranslate(params.position));
         if (params.invert) {
             resultIntervals = resultIntervals.inversion(params.axis);
         }
@@ -203,6 +208,7 @@ public:
     int getShift() const { return params.shift; }
     int getRotationOrRototrans() const { return params.rotationOrRototrans; }
     int getPreVoices() const { return params.preVoices; }
+    int getPosition() const { return params.position; }
     bool getInvert() const { return params.invert; }
     int getAxis() const { return params.axis; }
     bool getNegativeOrMirror() const { return params.negativeOrMirror; }
@@ -221,6 +227,11 @@ public:
 
     void setPreVoices(int val) {
         params.preVoices = val;
+        generate();
+    }
+
+    void setPosition(int val) {
+        params.position = val;
         generate();
     }
 
@@ -322,12 +333,12 @@ public:
  * 
  */
 
-PositionVector chord(PositionVector& scale, PositionVector& degrees, int shift = 0, int rototranslation = 0, int preVoices = 0, bool invert = false, int axis = 0, bool negative = false, int negativePos = 10) {
+PositionVector chord(PositionVector& scale, PositionVector& degrees, int shift = 0, int rototranslation = 0, int preVoices = 0, int position = 0, bool invert = false, int axis = 0, bool negative = false, int negativePos = 10) {
     PositionVector offsetDegrees = degrees + shift;
     PositionVector result = select(scale, offsetDegrees, rototranslation, preVoices);
     result = (invert) ? result.inversion(axis, true) : result;
     result = (negative) ? result.negative(negativePos) : result;
-    return result;
+    return result.rotoTranslate(position);
 };
 
 /**
@@ -344,13 +355,13 @@ PositionVector chord(PositionVector& scale, PositionVector& degrees, int shift =
  * @return IntervalVector representing the generated chord
  * 
  */
-PositionVector chord(PositionVector& scale, IntervalVector& intervals, int shift = 0, int rotation = 0, int preVoices = 0, bool invert = false, int axis = 0, bool negative = false, int negativePos = 10){
+PositionVector chord(PositionVector& scale, IntervalVector& intervals, int shift = 0, int rotation = 0, int preVoices = 0, int position = 0, bool invert = false, int axis = 0, bool negative = false, int negativePos = 10){
     IntervalVector offsetIntervals = intervals;
     offsetIntervals.setOffset(shift);
     PositionVector result = select(scale, offsetIntervals, rotation, preVoices);
     result = (invert) ? result.inversion(axis, true) : result;
     result = (negative) ? result.negative(negativePos) : result;
-    return result;
+    return result.rotoTranslate(position);
 };
 
 /**
@@ -367,11 +378,11 @@ PositionVector chord(PositionVector& scale, IntervalVector& intervals, int shift
  * @return IntervalVector representing the generated chord
  * 
  */
-IntervalVector chord(IntervalVector& scale, PositionVector& degrees, int shift = 0, int rototranslation = 0, int preVoices = 0, bool invert = false, int axis = 0, bool mirror = false, int mirrorPos = 0) {
+IntervalVector chord(IntervalVector& scale, PositionVector& degrees, int shift = 0, int rototranslation = 0, int preVoices = 0, int position = 0, bool invert = false, int axis = 0, bool mirror = false, int mirrorPos = 0) {
     PositionVector scalePositions = intervalsToPositions(scale);
     PositionVector offsetDegrees = degrees + shift;
     PositionVector resultPositions = select(scalePositions, offsetDegrees, rototranslation, preVoices);
-    IntervalVector result = positionsToIntervals(resultPositions);
+    IntervalVector result = positionsToIntervals(resultPositions.rotoTranslate(position));
     result = (invert) ? result.inversion(axis) : result;
     result = (mirror) ? result.singleMirror(mirrorPos, true) : result;
     return result;
@@ -391,13 +402,13 @@ IntervalVector chord(IntervalVector& scale, PositionVector& degrees, int shift =
  * @return IntervalVector representing the generated chord
  * 
  */
-IntervalVector chord(IntervalVector& scale, IntervalVector& intervals, int shift = 0, int rotation = 0, int preVoices = 0, bool invert = false, int axis = 0, bool mirror = false, int mirrorPos = 0) {
+IntervalVector chord(IntervalVector& scale, IntervalVector& intervals, int shift = 0, int rotation = 0, int preVoices = 0, int position = 0, bool invert = false, int axis = 0, bool mirror = false, int mirrorPos = 0) {
     PositionVector scalePositions = intervalsToPositions(scale);
     IntervalVector offsetIntervals = intervals;
     int off = intervals.getOffset();
     offsetIntervals.setOffset(shift + off);
     PositionVector resultPos = select(scalePositions, offsetIntervals, rotation, preVoices);
-    IntervalVector result = positionsToIntervals(resultPos);
+    IntervalVector result = positionsToIntervals(resultPos.rotoTranslate(position));
     result = (invert) ? result.inversion(axis) : result;
     result = (mirror) ? result.singleMirror(mirrorPos, true) : result;
     return result;
