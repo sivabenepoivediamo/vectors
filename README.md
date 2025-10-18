@@ -20,7 +20,7 @@
 src/
 	automations.h		  # Automation for voice leading, modulation, modal interchange and degree selection
 	binaryVector.h        # BinaryVector class for binary rhythm patterns
-	chord.h               # Chord generation functions from scales and intervals
+	chord.h               # Chord generation functions from scales and intervals, chord classes and parameter data structures
 	distances.h           # Distance and transformation functions for vectors
 	intervalVector.h      # IntervalVector class for intervallic structures
 	mathUtil.h            # Mathematical utilities (GCD, LCM, Euclidean division)
@@ -35,6 +35,7 @@ src/
 	vectors.h             # Conversion functions between representations
 examples/
 	automations.cpp 	  # Voice leading, modulation, modal interchange, degree selection automation examples
+	chordClass.cpp        # Chord class examples
 	chordTest.cpp         # Chord generation and selection examples
 	classtest.cpp         # Class tests for IntervalVector, BinaryVector, PositionVector
 	distances.cpp         # Distance and transformation examples
@@ -75,12 +76,14 @@ README.md
 
 ## TODO
 - **Rhythmic subdivision priority grid**
-- **Chord class abstraction**
 - **Note naming function**
 - **Block Chords**
 - **Spread Voicings**
 - **Melody and phrase abstractions**
 - **Imitation and counterpoint functions**
+- **Slonimsky 'Thesaurus' implementation**
+- **Scale dictionary**
+- **Chord from parameters**
 - **Vector analysis and measurements**
 
 

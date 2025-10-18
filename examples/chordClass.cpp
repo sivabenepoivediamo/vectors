@@ -1,5 +1,5 @@
 #include "../src/chord.h"
-#include <iostream>
+
 
 int main() {
     PositionVector cMajorScale({0, 2, 4, 5, 7, 9, 11}, 12);
