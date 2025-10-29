@@ -63,4 +63,23 @@
         return PositionVector(posData, mod, 0, true, false);
     }
 
+    BinaryVector positionsToBinary(PositionVector& positions) {
+        if (positions.size() == 0) {
+            return BinaryVector({}, 0, positions.mod);
+        }
+        
+        vector<int> posData = positions.getData();
+        int range = positions.getRange();
+        vector<int> binaryData(range, 0);
+        
+        // Normalize positions to range [0, range)
+        int minPos = *min_element(posData.begin(), posData.end());
+        for (int pos : posData) {
+            int normalizedPos = pos - posData[0];
+            DivisionResult div = euclideanDivision(normalizedPos, range);
+            binaryData[div.remainder] = 1;
+        }
+        
+        return BinaryVector(binaryData, minPos, range);
+    }
 #endif // VECTORS_H

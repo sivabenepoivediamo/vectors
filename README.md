@@ -6,45 +6,57 @@
 
 ## Features
 
-- Unified vector classes for positions, intervals, and binary patterns
-- Meta-operators for selection, transformation, and generation of musical objects
-- Distance and similarity measures for musical vectors
-- Matrix operations for modal, transpositional, and rototranslational analysis
-- Rhythmic pattern generators (Euclidean, Clough-Douthett, deep rhythms, tihai, etc.)
-- Support for cyclic and modular arithmetic in musical contexts
-- Extensible and modular design for advanced applications
+- Unified vector classes for positions, intervals, and binary patterns (`PositionVector`, `IntervalVector`, `BinaryVector`).
+- A unified `Vectors` container that keeps the three representations synchronized and provides convenient conversions and high-level operations.
+- Meta-operators for selection and transformation (position/interval selection, modal selection, modal interchange).
+- Chord and scale utilities for generating chords from scales/degrees and transforming them (transposition, inversion, rototranslation, mirroring).
+- Rich distance and similarity metrics (Euclidean, Manhattan, Hamming, Levenshtein/edit distance, weighted transformation distance) with matrix-based search utilities for best matches.
+- Matrix utilities: modal matrices, transposition matrices, and rototranslation matrices plus helpers to compute distances between a reference and all matrix rows (`matrix.h`, `matrixDistance.h`).
+- Rhythmic utilities and generators: Euclidean rhythms, Clough–Douthett, deep rhythms, tihai and conversion helpers (`rhythmGen.h`).
+- Note naming and mapping utilities to convert MIDI/position vectors to human-readable note names with enharmonic handling (`noteNames.h`).
+- Analysis and measurement helpers (spectrum, symmetry, entropy, deepness checks, geodesic distances) in `measures.h`.
+- Automation helpers for voice-leading, degree-based automations, modal interchange and modulation (`automations.h`).
+- Examples covering most features are provided under `examples/` to serve as usage references and simple tests.
 
 ## Library Structure
 
 ```
 src/
-	automations.h		  # Automation for voice leading, modulation, modal interchange and degree selection
-	binaryVector.h        # BinaryVector class for binary rhythm patterns
-	chord.h               # Chord generation functions from scales and intervals, chord classes and parameter data structures
-	distances.h           # Distance and transformation functions for vectors
-	intervalVector.h      # IntervalVector class for intervallic structures
-	mathUtil.h            # Mathematical utilities (GCD, LCM, Euclidean division)
-	matrixDistance.h      # Classes and methods for distance calculation between vectors and matrices
-	matrix.h              # Classes and methods for modal, modal selection, rototranslation and transposition matrices
-	positionVector.h      # PositionVector class for pitch/position sets
-	rhythmGen.h           # Rhythmic pattern generators
-	scale.h               # Scale class for musical scales and transformations
-	selection.h           # Selection meta-operators for musical structures
-	utility.h             # General utility functions and includes
-	Vector.h              # Vectors class: unified representation (positions, intervals, binary)
-	vectors.h             # Conversion functions between representations
+	automations.h          # High-level automation helpers (voice leading, degree automation, modal interchange, modulation)
+	binaryVector.h        # BinaryVector class for rhythmic patterns and logical operations
+	chord.h               # Chord class and ChordParams: generate chords from scales or intervals
+	distances.h           # Distance and transformation metrics and helpers
+	intervalVector.h      # IntervalVector class (intervallic representations and operations)
+	mathUtil.h            # Math helpers (Euclidean division, GCD, LCM)
+	matrixDistance.h      # Distance calculation wrappers for matrix result rows and utilities
+	matrix.h              # Modal, transposition and rototranslation matrix generators
+	measures.h            # Analytical measures: spectra, symmetry, entropy, deepness, etc.
+	noteNames.h           # Mapping position vectors / MIDI numbers to note names (enharmonic handling)
+	positionVector.h      # PositionVector class (positional representations and geometric ops)
+	quantizeTranspose.h   # Quantize/transposition helpers between scales
+	rhythmGen.h           # Rhythmic pattern generators (Euclidean, Clough-Douthett, deep rhythms, tihai)
+	scale.h               # Scale class and ScaleParams
+	selection.h           # Selection meta-operators for position/interval sources
+	utility.h             # Common includes and project-wide using declarations
+	Vector.h              # Vectors: unified representation and convenience constructors
+	vectors.h             # Standalone conversion helpers between representations
+
 examples/
-	automations.cpp 	  # Voice leading, modulation, modal interchange, degree selection automation examples
-	chordClass.cpp        # Chord class examples
-	chordTest.cpp         # Chord generation and selection examples
-	classtest.cpp         # Class tests for IntervalVector, BinaryVector, PositionVector
-	distances.cpp         # Distance and transformation examples
-	matrixDistances.cpp   # Examples of distances between vectors and matrices
-	matrix.cpp            # Matrix examples
-	rhythmGen.cpp         # Rhythmic pattern generation examples
-	scale.cpp             # Scale class usage and transformations
-	selection.cpp         # Selection meta-operators demonstration
-	vectortest.cpp        # Unified Vectors class demonstration
+	automations.cpp       # Examples: automation helpers (degree/voice-leading/modulation)
+	automationsSeq.cpp    # Sequential voice-leading and degree automation example
+	chordClass.cpp        # Chord class usage and examples
+	chordTest.cpp         # Chord helper tests
+	classtest.cpp         # Core class test suite (PositionVector/IntervalVector/BinaryVector)
+	distances.cpp         # Distance metrics and transformation examples
+	matrixDistances.cpp   # Matrix-distance examples
+	matrix.cpp            # Matrix generation and utilities examples
+	measures.cpp          # Example usage of measures/analysis helpers
+	noteNames.cpp         # Note naming system examples and tests
+	rhythmGen.cpp         # Rhythmic generators demonstration
+	scale.cpp             # Scale class demonstrations
+	selection.cpp         # Selection meta-operators demo
+	vectortest.cpp        # Demonstration of Vectors unified API
+
 LICENSE
 README.md
 ```

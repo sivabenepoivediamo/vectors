@@ -780,6 +780,25 @@ TranspositionMatrixDistance calculateDistances(
     return tmd;
 }
 
+int align(PositionVector reference, PositionVector target){
+  int minV = reference[0];
+  DivisionResult referenceDiv = euclideanDivision(reference[0], reference.range);
+  DivisionResult targetDiv = euclideanDivision(target[0], target.range);
+  int diffOct = referenceDiv.quotient - targetDiv.remainder;
+  int size = target.size();
+  int i = diffOct * size;
+
+  while (target[i] <= minV) {
+    i++;
+  }
+
+  while (target[i] > minV) {
+    i--;
+  }
+
+  return i;
+}
+
 /**
  * @brief Calculates distances between a reference PositionVector and a RototranslationMatrix
  * @param reference Reference PositionVector to compare against
@@ -802,7 +821,6 @@ RototranslationMatrixDistance calculateDistances(
         double dist = distFunc(reference, vec);
         result.emplace_back(make_tuple(vec, idx, dist));
     }
-    
     auto rmd = RototranslationMatrixDistance(result, matrix.getCenter());
     if (sort) {
         rmd.sortByDistance();

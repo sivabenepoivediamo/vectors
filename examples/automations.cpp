@@ -1,3 +1,11 @@
+/**
+ * @file automations.cpp
+ * @brief Example: degree, voice-leading and modal interchange automation utilities
+ *
+ * Demonstrates degreeAutomation, voiceLeadingAutomation and related helpers.
+ *
+ * @example
+ */
 #include "../src/automations.h"
 
 int main(){
@@ -8,7 +16,7 @@ int main(){
     PositionVector target({67, 71, 74});
     PositionVector notes ({63});
     int complexity = 0;
-    int degree = 0;
+    int degree = 3;
 
     cout << "Scale: " << scale << '\n';
     cout << "Criterion (intervals): " << criterion << '\n';

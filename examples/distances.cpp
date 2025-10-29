@@ -2,6 +2,18 @@
 
 
 
+#/**
+ * @file distances.cpp
+ * @brief Example: distance metrics between position vectors
+ *
+ * Computes Euclidean, Manhattan, edit, Hamming and weighted transformation distances
+ * between example vectors and prints intermediate transformation steps.
+ *
+ * @example
+ */
+#include "../src/distances.h"
+
+
 int main()  {
     PositionVector a = PositionVector({0, 4, 7, 11});
     PositionVector b = PositionVector({7, 11, 14, 17});

@@ -1,3 +1,12 @@
+/**
+ * @file classtest.cpp
+ * @brief Example: unit-like tests for core vector classes
+ *
+ * Exercises constructors, arithmetic and utility methods of `IntervalVector`,
+ * `BinaryVector`, and `PositionVector` and prints results to stdout.
+ *
+ * @example
+ */
 #include "../src/IntervalVector.h"
 #include "../src/BinaryVector.h"
 #include "../src/PositionVector.h"

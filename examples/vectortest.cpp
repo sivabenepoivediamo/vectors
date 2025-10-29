@@ -1,3 +1,12 @@
+/**
+ * @file vectortest.cpp
+ * @brief Example: demonstration of the Vectors class and utilities
+ *
+ * Shows construction from different representations (positions, intervals, binary),
+ * Euclidean rhythms, and common transformations.
+ *
+ * @example
+ */
 #include <iostream>
 #include "../src/Vector.h"
 

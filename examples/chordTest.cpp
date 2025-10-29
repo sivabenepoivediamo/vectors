@@ -1,4 +1,12 @@
 
+/**
+ * @file chordTest.cpp
+ * @brief Example: small tests for chord helper functions
+ *
+ * Verifies chord construction from position and interval sources and prints results.
+ *
+ * @example
+ */
 #include "../src/chord.h"
 
 int main() {
@@ -6,7 +14,7 @@ int main() {
     IntervalVector majorScaleIntervals({2, 2, 1, 2, 2, 2, 1}, 0, 12);
     PositionVector triadDegrees({0, 2, 4}, 12); 
     IntervalVector grouping({2}, 0, 12);
-    int voices = 3;
+    int voices = 5;
     int scaleShift = 0;
     int degreesShift = 0;
     int rot = 0;

@@ -1,3 +1,11 @@
+#/**
+ * @file rhythmGen.cpp
+ * @brief Example: rhythm generation utilities (Euclidean, Clough-Douthett, etc.)
+ *
+ * Demonstrates generation of common rhythmic patterns and conversions to `Vectors`.
+ *
+ * @example
+ */
 #include "../src/rhythmGen.h"
 
 int main() {

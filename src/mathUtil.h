@@ -4,6 +4,14 @@
 #include "./utility.h"
 
 /**
+ * @file mathUtil.h
+ * @brief Mathematical utilities used across the library (Euclidean division, GCD/LCM)
+ *
+ * Contains helpers for Euclidean division (with non-negative remainders),
+ * greatest common divisor and least common multiple computation.
+ */
+
+/**
  * @brief Structure to represent the result of Euclidean division
  * 
  * Contains the quotient and remainder of Euclidean division, where the remainder

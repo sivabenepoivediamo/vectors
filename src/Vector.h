@@ -30,7 +30,7 @@ public:
     int mod;  ///< Global modulo for all representations
     
     // ==================== CONVERSION FUNCTIONS ====================
-private:    
+   
     /**
      * @brief Converts positions to intervals
      * @return IntervalVector derived from current positions

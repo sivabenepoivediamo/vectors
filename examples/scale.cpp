@@ -1,3 +1,11 @@
+/**
+ * @file scale.cpp
+ * @brief Example: tests and demonstrations for the Scale class
+ *
+ * Shows creation of scales from intervals and conversions to positions and intervals.
+ *
+ * @example
+ */
 #include "../src/scale.h"
 // Helper function to print IntervalVector
 void printIntervalVector(const IntervalVector& iv, const std::string& label) {

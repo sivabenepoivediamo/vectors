@@ -1,3 +1,11 @@
+/**
+ * @file selection.cpp
+ * @brief Example: selection meta-operators test suite
+ *
+ * Demonstrates selection utilities, filtering, and helper output functions.
+ *
+ * @example
+ */
 #include "../src/selection.h"
 
 using namespace std;

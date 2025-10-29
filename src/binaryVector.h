@@ -26,7 +26,7 @@ using namespace std;
  * - Automatic modulo adaptation via LCM
  */
 class BinaryVector {
-private:
+public:
     vector<int> data;        ///< Binary data (0s and 1s)
     int offset;              ///< Offset for transposition
     int mod;                 ///< Modulo base (period)
@@ -43,7 +43,7 @@ private:
         }
     }
 
-public:
+
     /**
      * @brief Default constructor
      */

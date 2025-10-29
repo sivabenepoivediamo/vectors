@@ -1,8 +1,33 @@
 #ifndef AUTOMATIONS_H
 #define AUTOMATIONS_H
 
+/**
+ * @file automations.h
+ * @brief High-level automation utilities for voice-leading and degree-based operations
+ *
+ * Provides convenience wrappers to compute best-fit rototranslations, transpositions,
+ * modal selections, and degree-based automations for sequences of `PositionVector`.
+ *
+ * These functions are thin helpers built on top of the distance and matrix utilities.
+ *
+ * @see matrixDistance.h
+ */
 #include "./matrixDistance.h"
 
+/**
+ * @brief Find best rototranslation row for a given degree using a criterion
+ *
+ * Performs a modal selection for the provided `degree` on `scale` using
+ * `criterion`, computes the rototranslation matrix for those selections and
+ * returns the best matching row to `reference` according to `complexity`.
+ *
+ * @param scale Scale as a PositionVector
+ * @param criterion IntervalVector used as a selection criterion
+ * @param degree Degree index within the modal selection
+ * @param reference Reference PositionVector used for distance calculation
+ * @param complexity Complexity index used to select among ties (default 0)
+ * @return Best matching ModalRototranslationMatrixRow
+ */
 ModalRototranslationMatrixRow degreeAutomation(PositionVector& scale, IntervalVector& criterion, int degree, PositionVector& reference, int complexity = 0){
     ModalSelectionMatrix sel = modalSelection(scale, criterion, degree);
     ModalRototranslationMatrix degrees = modalRototranslation(sel);
@@ -11,13 +36,36 @@ ModalRototranslationMatrixRow degreeAutomation(PositionVector& scale, IntervalVe
     return out;
 }
 
+/**
+ * @brief Compute best rototranslation to voice-lead `target` to `reference`
+ *
+ * Aligns `target` with `reference` and computes rototranslation distances
+ * returning the selected best row according to `complexity`.
+ *
+ * @param reference Reference PositionVector
+ * @param target Target PositionVector to be voice-led
+ * @param complexity Complexity index used for tie-breaking (default 0)
+ * @return Best matching RototranslationMatrixRow
+ */
 RototranslationMatrixRow voiceLeadingAutomation(PositionVector& reference, PositionVector& target, int complexity = 0){
-    RototranslationMatrix positions = rototranslationMatrix(target, 0);
+    int center = align(reference, target);
+    RototranslationMatrix positions = rototranslationMatrix(target, center);
     RototranslationMatrixDistance distances = calculateDistances(reference, positions);
     RototranslationMatrixRow out = distances.getByComplexity(complexity);
     return out;
 }
 
+/**
+ * @brief Find best modal-interchange selection matching a set of notes
+ *
+ * Filters the modal matrix of `scale` to selections that contain `notes`,
+ * computes distances and returns the best matching row for the given `complexity`.
+ *
+ * @param scale Input scale as PositionVector
+ * @param notes Vector of pitch classes (notes) used to filter modal selections
+ * @param complexity Complexity index used to pick the result
+ * @return Best matching ModalMatrixRow<PositionVector>
+ */
 ModalMatrixRow<PositionVector> modalInterchangeAutomation(PositionVector& scale, const vector<int>& notes, int complexity){
     ModalMatrix<PositionVector> modes = modalMatrix(scale);
     ModalMatrix<PositionVector> filter = filterModalMatrix(modes, notes);
@@ -26,6 +74,17 @@ ModalMatrixRow<PositionVector> modalInterchangeAutomation(PositionVector& scale,
     return out;
 }
 
+/**
+ * @brief Find best transposition (modulation) matching a set of notes
+ *
+ * Builds the transposition matrix for `scale`, filters rows that contain
+ * `notes`, computes distances and returns the best matching transposition row.
+ *
+ * @param scale Input scale as PositionVector
+ * @param notes Vector of pitch classes used to filter transpositions
+ * @param complexity Complexity index for selecting among candidates
+ * @return Best matching TranspositionMatrixRow
+ */
 TranspositionMatrixRow modulationAutomation(PositionVector& scale, const vector<int>& notes, int complexity){
     TranspositionMatrix transpositions = transpositionMatrix(scale);
     TranspositionMatrix filter = filterTranspositionMatrix(transpositions, notes);
@@ -195,6 +254,159 @@ vector<PositionVector> voiceLeadingAutomationSequentialBackward(
         PositionVector target = targets[i]; // Copy for rototranslationMatrix
         PositionVector& reference = result[i + 1]; // Next result
         RototranslationMatrixRow selected = voiceLeadingAutomation(reference, target, normalizedComplexities[i]);
+        result[i] = selected.getVector();
+    }
+    
+    return result;
+}
+
+/**
+ * @brief Performs degree automation with a single reference position
+ * @param scale The scale to use for modal selection
+ * @param criterion The interval criterion for modal selection
+ * @param degrees Vector of degree values
+ * @param reference Reference PositionVector for distance calculation
+ * @param complexities Vector of complexity values (will be normalized to match degrees size)
+ * @return Vector of PositionVectors with degree automation applied
+ */
+vector<PositionVector> degreeAutomationReference(
+    PositionVector& scale,
+    IntervalVector& criterion,
+    const vector<int>& degrees,
+    PositionVector& reference,
+    const vector<int>& complexities = vector<int>())
+{
+    vector<int> normalizedComplexities = normalizeComplexityVector(complexities, degrees.size());
+    
+    vector<PositionVector> result;
+    result.reserve(degrees.size());
+    
+    for (size_t i = 0; i < degrees.size(); ++i) {
+        ModalRototranslationMatrixRow selected = degreeAutomation(
+            scale, criterion, degrees[i], reference, normalizedComplexities[i]);
+        result.push_back(selected.getVector());
+    }
+    
+    return result;
+}
+
+/**
+ * @brief Performs degree automation with individual reference positions
+ * @param scale The scale to use for modal selection
+ * @param criterion The interval criterion for modal selection
+ * @param degrees Vector of degree values
+ * @param references Vector of reference PositionVectors (must match degrees size)
+ * @param complexities Vector of complexity values (will be normalized to match degrees size)
+ * @return Vector of PositionVectors with degree automation applied
+ * @details Each degree is compared against its corresponding reference position
+ */
+vector<PositionVector> degreeAutomationVectorReference(
+    PositionVector& scale,
+    IntervalVector& criterion,
+    const vector<int>& degrees,
+    vector<PositionVector>& references,
+    const vector<int>& complexities = vector<int>())
+{
+    if (degrees.size() != references.size()) {
+        throw runtime_error("degrees and references must have the same size");
+    }
+    
+    vector<int> normalizedComplexities = normalizeComplexityVector(complexities, degrees.size());
+    
+    vector<PositionVector> result;
+    result.reserve(degrees.size());
+    
+    for (size_t i = 0; i < degrees.size(); ++i) {
+        ModalRototranslationMatrixRow selected = degreeAutomation(
+            scale, criterion, degrees[i], references[i], normalizedComplexities[i]);
+        result.push_back(selected.getVector());
+    }
+    
+    return result;
+}
+
+/**
+ * @brief Performs sequential degree automation from start to end
+ * @param scale The scale to use for modal selection
+ * @param criterion The interval criterion for modal selection
+ * @param degrees Vector of degree values (first degree's result is used as initial reference)
+ * @param initialReference Initial reference position for the first degree
+ * @param complexities Vector of complexity values (will be normalized to degrees size)
+ * @return Vector of PositionVectors with sequential degree automation applied
+ * @throws runtime_error if degrees vector is empty
+ * @details First result is calculated using initialReference. Each subsequent result
+ *          uses the previous result as its reference.
+ */
+vector<PositionVector> forwardDegreeAutomation(
+    PositionVector& scale,
+    IntervalVector& criterion,
+    const vector<int>& degrees,
+    PositionVector& initialReference,
+    const vector<int>& complexities = vector<int>())
+{
+    if (degrees.empty()) {
+        throw runtime_error("degrees vector cannot be empty");
+    }
+    
+    vector<int> normalizedComplexities = normalizeComplexityVector(complexities, degrees.size());
+    
+    vector<PositionVector> result;
+    result.reserve(degrees.size());
+    
+    // First element uses initial reference
+    ModalRototranslationMatrixRow first = degreeAutomation(
+        scale, criterion, degrees[0], initialReference, normalizedComplexities[0]);
+    result.push_back(first.getVector());
+    
+    // Sequential processing - each uses previous result as reference
+    for (size_t i = 1; i < degrees.size(); ++i) {
+        PositionVector& reference = result[i - 1];
+        ModalRototranslationMatrixRow selected = degreeAutomation(
+            scale, criterion, degrees[i], reference, normalizedComplexities[i]);
+        result.push_back(selected.getVector());
+    }
+    
+    return result;
+}
+
+/**
+ * @brief Performs sequential degree automation from end to start
+ * @param scale The scale to use for modal selection
+ * @param criterion The interval criterion for modal selection
+ * @param degrees Vector of degree values (last degree's result is used as final reference)
+ * @param finalReference Final reference position for the last degree
+ * @param complexities Vector of complexity values (will be normalized to degrees size)
+ * @return Vector of PositionVectors with sequential degree automation applied in reverse
+ * @throws runtime_error if degrees vector is empty
+ * @details Last result is calculated using finalReference. Each previous result
+ *          uses the next result as its reference.
+ */
+vector<PositionVector> degreeAutomationSequentialBackward(
+    PositionVector& scale,
+    IntervalVector& criterion,
+    const vector<int>& degrees,
+    PositionVector& finalReference,
+    const vector<int>& complexities = vector<int>())
+{
+    if (degrees.empty()) {
+        throw runtime_error("degrees vector cannot be empty");
+    }
+    
+    vector<int> normalizedComplexities = normalizeComplexityVector(complexities, degrees.size());
+    
+    vector<PositionVector> result(degrees.size());
+    
+    // Last element uses final reference
+    ModalRototranslationMatrixRow last = degreeAutomation(
+        scale, criterion, degrees[degrees.size() - 1], finalReference, 
+        normalizedComplexities[degrees.size() - 1]);
+    result[degrees.size() - 1] = last.getVector();
+    
+    // Sequential processing backward - each uses next result as reference
+    for (int i = degrees.size() - 2; i >= 0; --i) {
+        PositionVector& reference = result[i + 1];
+        ModalRototranslationMatrixRow selected = degreeAutomation(
+            scale, criterion, degrees[i], reference, normalizedComplexities[i]);
         result[i] = selected.getVector();
     }
     

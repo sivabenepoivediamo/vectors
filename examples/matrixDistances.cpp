@@ -1,3 +1,12 @@
+#/**
+ * @file matrixDistances.cpp
+ * @brief Example: computing distances over transposition, modal and rototranslation matrices
+ *
+ * Demonstrates building transposition/modal/rototranslation matrices and computing
+ * distance metrics and best matches.
+ *
+ * @example
+ */
 #include "../src/matrixDistance.h"
 
 int main(){
@@ -12,6 +21,9 @@ int main(){
     cout << "C Lydian Mode: " << clyd << '\n';
     cout << "C Major Chord:   " << v1 << '\n';
     cout << "G Major Chord:   " << v2 << '\n';
+
+    int center = align(v1, v2);
+    cout << "\nRototranslation center: \n" << center << endl;
     
     TranspositionMatrix trans = transpositionMatrix(cmaj);
     cout << "\n=== Transposition matrix distances (comparing C lydian and C major transpositions) ===\n";
@@ -27,7 +39,7 @@ int main(){
     ModalMatrixRow modeBest = b.getByComplexity(complexity);
     cout << "\nBest mode for complexity " << complexity << ":" << endl;
     cout << modeBest << '\n';
-    RototranslationMatrix positions = rototranslationMatrix(v2, 0);
+    RototranslationMatrix positions = rototranslationMatrix(v2, center);
     cout << "\n=== Rototranslation distances (comparing C major to rototranslations of G major) ===\n";
    RototranslationMatrixDistance c = calculateDistances(v1, positions);
     printMatrixDistance(c);

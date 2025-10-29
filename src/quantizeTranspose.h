@@ -2,9 +2,6 @@
 #define QUANTIZE_TRANSPOSE_H
 
 #include "./PositionVector.h"
-#include <vector>
-#include <algorithm>
-#include <utility>
 
 /**
  * @file quantize_transpose.h

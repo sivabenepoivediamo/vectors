@@ -1,3 +1,11 @@
+/**
+ * @file matrix.cpp
+ * @brief Example: matrix utilities (modal, transposition, rototranslation)
+ *
+ * Exercises `ModalMatrix`, `TranspositionMatrix` and related routines and prints results.
+ *
+ * @example
+ */
 #include "../src/matrix.h"
 
 using namespace std;

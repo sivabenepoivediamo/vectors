@@ -1,3 +1,10 @@
+/*! 
+ * @file utility.h
+ * @brief Common includes and project-wide using declarations
+ *
+ * Provides common STL includes and establishes `using namespace std;` for
+ * convenience within the small example project. Keep this header lightweight.
+ */
 #ifndef UTILITY_H
 #define UTILITY_H
 

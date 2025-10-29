@@ -1,3 +1,11 @@
+#/**
+ * @file noteNames.cpp
+ * @brief Example: mapping MIDI numbers and position vectors to human-readable note names
+ *
+ * Runs several test-cases for `NoteNamingSystem` and demonstrates mapping options.
+ *
+ * @example
+ */
 #include "../src/noteNames.h"
 
 int main() {
@@ -64,11 +72,12 @@ int main() {
     cout << endl;
     
     // Test with modulo transformation
-    cout << "\n--- Test 4: Microtonal Scale (19-EDO mapped to 12-TET) ---" << endl;
-    PositionVector microtonal({0, 3, 6, 10, 13, 16, 18});
-    cout << "Input PositionVector (mod 19): " << microtonal << endl;
+    cout << "\n--- Test 4: Microtonal Scale (31-EDO mapped to 12-TET) ---" << endl;
+    PositionVector microtonal({0, 5, 10, 13, 18, 23, 28}, 31);
+    microtonal = microtonal.rotoTranslate(2);
+    cout << "Input PositionVector (mod 31): " << microtonal << endl;
     
-    NoteMapperOptions microtonalOpts(true, false, 19);
+    NoteMapperOptions microtonalOpts(false, false, 31);
     NoteResult result4 = system.positionVectorToNoteNames(microtonal, microtonalOpts);
     
     cout << "Notes: ";

@@ -235,8 +235,11 @@
             
             result[k] = sum;
         }
-        
-        return IntervalVector(result, off, source.getMod());
+        int sOut = off;
+        for (int j = 0; j < criterion[0]; ++j) {
+            sOut += source[j];
+        }
+        return IntervalVector(result, sOut, source.getMod());
     }
 
 #endif // SELECTION_H

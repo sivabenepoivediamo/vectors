@@ -1,5 +1,14 @@
 #include "../src/chord.h"
 
+/**
+ * @file chordClass.cpp
+ * @brief Example: chord class usage and parameter manipulation
+ *
+ * Demonstrates construction of chords from positions and intervals,
+ * updating parameters, and inversion behavior.
+ *
+ * @example
+ */
 
 int main() {
     PositionVector cMajorScale({0, 2, 4, 5, 7, 9, 11}, 12);
