@@ -413,4 +413,109 @@ vector<PositionVector> degreeAutomationSequentialBackward(
     return result;
 }
 
+/**
+ * @brief Get the maximum consecutive interval in a scale representation
+ *
+ * Scans the integer vector representing scale degrees (absolute positions)
+ * and returns the largest gap between consecutive elements. This helper is
+ * used by `autoScale` to prefer candidate mappings that minimize the largest
+ * step introduced by remapping pitch-classes into scale degrees.
+ *
+ * @param scale Vector of absolute positions
+ * @return The maximum interval between consecutive entries in `scale`
+ */
+
+int getMaxInterval(vector<int>& scale) {
+    int maxInterval = 0;
+    for (size_t i = 1; i < scale.size(); i++) {
+        int interval = scale[i] - scale[i-1];
+        maxInterval = max(maxInterval, interval);
+    }
+    return maxInterval;
+}
+
+
+/**
+ * @brief Auto-adjust a scale so it fits a set of absolute MIDI notes (pitch classes)
+ *
+ * For each input note the function finds the closest (by pitch-class) scale degree
+ * that has not yet been used and assigns the note to that degree possibly changing
+ * the degree's octave number to match the supplied note. Tie-breakers aim to
+ * minimise the maximum interval in the resulting scale and to prefer positions
+ * closer to the scale edges when equivalent.
+ *
+ * This is useful to adapt a given diatonic (or other) scale so that a set of
+ * sounded notes is represented within the scale with minimal distortion.
+ *
+ * @param scale Input scale as a `PositionVector` (will not be modified)
+ * @param notes Vector of absolute MIDI-like note numbers (integers). Values are reduced to pitch-classes using the scale modulus.
+ * @return A new `PositionVector` with adjusted scale degrees matching the supplied notes when possible
+ *
+ * @note The returned `PositionVector` preserves the input scale's modulus, user range and flags.
+ */
+PositionVector autoScale(PositionVector& scale, vector<int>& notes) {
+    vector<int> scaleData = scale.getData();
+    int mod = scale.getMod();
+    
+    vector<int> pitchClasses;
+    for (int note : notes) {
+        pitchClasses.push_back(note % mod);
+    }
+    
+    vector<bool> used(scaleData.size(), false);
+    
+    for (int pc : pitchClasses) {
+        int closest = -1;
+        int minDist = mod;
+        int bestMaxInterval = 999;
+        
+        for (int i = 0; i < scaleData.size(); i++) {
+            if (used[i]) continue;
+            
+            int scalePc = scaleData[i] % mod;
+            int upDist = (pc - scalePc + mod) % mod;
+            int downDist = (scalePc - pc + mod) % mod;
+            int dist = min(upDist, downDist);
+            
+            if (dist < minDist) {
+                minDist = dist;
+                closest = i;
+
+                vector<int> tempScale = scaleData;
+                int octave = tempScale[i] / mod;
+                tempScale[i] = octave * mod + pc;
+                bestMaxInterval = getMaxInterval(tempScale);
+            } else if (dist == minDist) {
+
+                vector<int> tempScale = scaleData;
+                int octave = tempScale[i] / mod;
+                tempScale[i] = octave * mod + pc;
+                int maxInterval = getMaxInterval(tempScale);
+                
+                if (maxInterval < bestMaxInterval) {
+                    closest = i;
+                    bestMaxInterval = maxInterval;
+                } else if (maxInterval == bestMaxInterval && closest != -1) {
+                    int toEdge = min(i, (int)scaleData.size() - 1 - i);
+                    int closestToEdge = min(closest, (int)scaleData.size() - 1 - closest);
+                    if (toEdge < closestToEdge) {
+                        closest = i;
+                        bestMaxInterval = maxInterval;
+                    }
+                }
+            }
+        }
+        
+        if (closest != -1) {
+
+            int octave = scaleData[closest] / mod;
+            scaleData[closest] = octave * mod + pc;
+            used[closest] = true;
+        }
+    }
+
+    return PositionVector(scaleData, scale.getMod(), scale.getUserRange(), 
+                         scale.getRangeUpdate(), scale.getUser());
+}
+
 #endif  
