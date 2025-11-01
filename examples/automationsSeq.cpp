@@ -12,14 +12,13 @@
 int main(){
     
     PositionVector scale({0, 2, 4, 5, 7, 9, 11});
-    IntervalVector crit({2, 2, 2, 1});
-    IntervalVector crit2({2, 2, 3, 7});
-    PositionVector I = chord(scale, crit2, 0, 0, 4);
+    IntervalVector crit({2, 2, 2, 2});
+    PositionVector I = chord(scale, crit, 0, 0, 4);
     PositionVector II = chord(scale, crit, 1, 0, 4); 
-    PositionVector III = chord(scale, crit2, 2, 0, 4);
-    PositionVector IV = chord(scale, crit2, 3, 0, 4);
+    PositionVector III = chord(scale, crit, 2, 0, 4);
+    PositionVector IV = chord(scale, crit, 3, 0, 4);
     PositionVector V = chord(scale, crit, 4, 0, 4);
-    PositionVector VI = chord(scale, crit2, 5, 0, 4);
+    PositionVector VI = chord(scale, crit, 5, 0, 4);
     PositionVector VII = chord(scale, crit, 6, 0, 4);
     PositionVector IV6 = chord(scale, crit, 1, 0, 4, 1);
 
@@ -33,7 +32,7 @@ int main(){
     vector<PositionVector> reference = voiceLeadingAutomationReference(chords, IV6, complexities);
     vector<PositionVector> backward = voiceLeadingAutomationSequentialBackward(chords, complexities);
     vector<int> degrees = {0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0};
-    vector<PositionVector> autogr = forwardDegreeAutomation(scale, crit2, degrees, I, complexities);
+    vector<PositionVector> autogr = forwardDegreeAutomation(scale, crit, degrees, I, complexities);
     vector<PositionVector> autogr1 = degreeAutomationSequentialBackward(scale, crit, degrees, I, complexities);
 
     vector<PositionVector> autogr2 = degreeAutomationReference(scale, crit, degrees, I, complexities);
@@ -52,13 +51,13 @@ int main(){
 
     cout << "\nReference voicing\n" << IV6 << endl;
 
-    /*printSequence("Sequential voice leading with reference moving from start to end:", forward);
+    printSequence("Sequential voice leading with reference moving from start to end:", forward);
     printSequence("Sequential voice leading from end to start:", backward);
     printSequence("Voice leading with reference vector:", reference);
-    */
     printSequence("Forward degree automation:", autogr);
-    //printSequence("Backwards degree automation:", autogr1);
-    //printSequence("Reference degree automation:", autogr2);
+    printSequence("Backwards degree automation:", autogr1);
+    printSequence("Reference degree automation:", autogr2);
 
     return 0;
 }
+
