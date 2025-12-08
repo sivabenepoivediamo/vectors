@@ -13,7 +13,7 @@
 - Rich distance and similarity metrics (Euclidean, Manhattan, Hamming, Levenshtein/edit distance, weighted transformation distance) with matrix-based search utilities for best matches.
 - Matrix utilities: modal matrices, transposition matrices, and rototranslation matrices plus helpers to compute distances between a reference and all matrix rows (`matrix.h`, `matrixDistance.h`).
 - Rhythmic utilities and generators: Euclidean rhythms, Clough–Douthett, deep rhythms, tihai and conversion helpers (`rhythmGen.h`).
-- Note naming and mapping utilities to convert MIDI/position vectors to human-readable note names with enharmonic handling (`noteNames.h`).
+- Note, scale and chord naming and mapping utilities to convert MIDI/position vectors to human-readable note names with enharmonic handling (`noteNames.h`).
 - Analysis and measurement helpers (spectrum, symmetry, entropy, deepness checks, geodesic distances) in `measures.h`.
 - Automation helpers for voice-leading, degree-based automations, modal interchange and modulation (`automations.h`).
 - Examples covering most features are provided under `examples/` to serve as usage references and simple tests.
@@ -25,6 +25,7 @@ src/
 	automations.h          # High-level automation helpers (voice leading, degree automation, modal interchange, modulation)
 	binaryVector.h        # BinaryVector class for rhythmic patterns and logical operations
 	chord.h               # Chord class and ChordParams: generate chords from scales or intervals
+	chordNames.h           # Chord naming classes and functions
 	distances.h           # Distance and transformation metrics and helpers
 	intervalVector.h      # IntervalVector class (intervallic representations and operations)
 	mathUtil.h            # Math helpers (Euclidean division, GCD, LCM)
@@ -36,6 +37,7 @@ src/
 	quantizeTranspose.h   # Quantize/transposition helpers between scales
 	rhythmGen.h           # Rhythmic pattern generators (Euclidean, Clough-Douthett, deep rhythms, tihai)
 	scale.h               # Scale class and ScaleParams
+	scaleDictionary.h      # Scale dictionary and lookup functions
 	selection.h           # Selection meta-operators for position/interval sources
 	utility.h             # Common includes and project-wide using declarations
 	Vector.h              # Vectors: unified representation and convenience constructors
@@ -46,6 +48,7 @@ examples/
 	automationsSeq.cpp    # Sequential voice-leading and degree automation example
 	chordClass.cpp        # Chord class usage and examples
 	chordTest.cpp         # Chord helper tests
+	chordNames.cpp         # Chord naming examples
 	classtest.cpp         # Core class test suite (PositionVector/IntervalVector/BinaryVector)
 	distances.cpp         # Distance metrics and transformation examples
 	matrixDistances.cpp   # Matrix-distance examples
@@ -54,6 +57,7 @@ examples/
 	noteNames.cpp         # Note naming system examples and tests
 	rhythmGen.cpp         # Rhythmic generators demonstration
 	scale.cpp             # Scale class demonstrations
+	scaleDictionary.cpp    # Scale dictionary usage examples
 	selection.cpp         # Selection meta-operators demo
 	vectortest.cpp        # Demonstration of Vectors unified API
 
@@ -85,12 +89,14 @@ README.md
 - **Scale**: Encapsulates musical scales, supporting construction from positions or intervals, and transformations such as transposition, mode, inversion, and mirroring.
 
 ### Chord Class
+- **Chord**: the Chord and ChordParams classes contain the parameters we can use to generate a chord from a given scale.
 
 ### Automation Functions
 - **Voice Leading**: Computes the best inversion for the transition between two chords, based on a complexity factor.
 -**Degree Selection**: Computes the best degree of a chord in a transition based on a reference intervallic structure and a complexity factor. 
 -**Modal Interchange**: Selection of a mode of the parent scale based on a note vector input and a complexity factor. 
 -**Modulation**: Selection of a transposition of a scale, based on a note vector input and a complexity factor.
+-**AutoScale**: Modifies the current scale to fit "out" notes.
 
 
 
@@ -101,9 +107,6 @@ README.md
 - **Melody and phrase abstractions**
 - **Imitation and counterpoint functions**
 - **Slonimsky 'Thesaurus' implementation**
-- **Scale dictionary**
-- **Chord from parameters**
-- **Vector analysis and measurements**
 
 
 ## Getting Started
@@ -265,5 +268,6 @@ MIT License. See [LICENSE](LICENSE) for details.
 - Tymoczko, D. (2011). *A Geometry of Music: Harmony and Counterpoint in the Extended Common Practice*. New York: Oxford University Press.
 
 - Walker, J., & Don, G. W. (2013). *Mathematics and music: composition, perception, and performance*. Boca Raton, FL: CRC Press.
+
 
 - Whiteford, K. L., Schloss, K. B., Helwig, N. E., & Palmer, S. E. (2018). Color, Music, and Emotion: Bach to the Blues. *i-Perception*, 9(6), 2041669518808535.
