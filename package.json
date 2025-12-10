@@ -1,0 +1,21 @@
+{
+    "name": "vectors",
+    "private": true,
+    "scripts": {
+        "build": "turbo run build",
+        "test": "turbo run test",
+        "lint": "turbo run lint",
+        "dev": "turbo run dev",
+        "clean": "turbo run clean",
+        "docs": "turbo run docs",
+        "docs:clean": "turbo run docs:clean"
+    },
+    "devDependencies": {
+        "turbo": "latest"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "packageManager": "npm@10.8.2"
+}
