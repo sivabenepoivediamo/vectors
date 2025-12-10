@@ -27,7 +27,7 @@ Before getting started, ensure you have the following installed:
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd playground
+cd vectors
 
 # Install dependencies (includes Turborepo)
 npm install
@@ -45,7 +45,7 @@ This command uses Turborepo to build all packages in the correct dependency orde
 ## Monorepo Structure
 
 ```
-playground/
+vectors/
 ├── packages/
 │   └── cpp-sdk/              # C++ library package
 │       ├── src/              # Header-only library source files
@@ -225,4 +225,5 @@ When adding new features:
 ---
 
 For package-specific information, see the README files in each package directory.
+
 
