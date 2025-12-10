@@ -1,6 +1,6 @@
-# Musical Vectors Library - Turborepo Monorepo
+# **vectors** - Turborepo Monorepo
 
-A Turborepo monorepo containing the **vectors** C++ library for vectorial representation and manipulation of musical phenomena, along with future TypeScript and Python SDKs.
+A Turborepo monorepo containing the **vectors** C++ library for vectorial representation and manipulation of musical phenomena.
 
 ## Overview
 
@@ -225,3 +225,4 @@ When adding new features:
 ---
 
 For package-specific information, see the README files in each package directory.
+
