@@ -14,6 +14,7 @@ int main() {
 
     vector<vector<int>> testCases = {
         {1, 3, 5, 6, 8, 9, 12},          // C# or Db harmonic major
+        {0, 1, 3, 4, 6, 8, 10},           // C or B# altered
         {0, 2, 3, 5, 7, 9, 10},          // C Dorian
         {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, // Chromatic scale
         {1, 3, 5, 7, 9, 11},             // Whole tone scale
@@ -176,4 +177,5 @@ int main() {
     cout << endl;
 
     return 0;
+
 }
