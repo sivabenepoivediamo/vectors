@@ -6,7 +6,7 @@
 /**
  * @file NoteNaming.h
  * @brief Musical note naming system with enharmonic handling
- * @author [adapted from TypeScript by not251]
+ * @author [not251]
  * @date 2025
  */
 
@@ -161,6 +161,110 @@ private:
     }
     
     /**
+     * @brief Checks if a configuration contains double sharps or double flats
+     */
+    bool hasDoubleAccidentals(const vector<string>& noteNames) const {
+        for (const auto& note : noteNames) {
+            if (note.find("♯♯") != string::npos || note.find("##") != string::npos ||
+                note.find("♭♭") != string::npos || note.find("bb") != string::npos) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * @brief Scores a note configuration based on preference
+     * Higher score = better match to preference
+     */
+    int scoreConfiguration(const vector<string>& noteNames, bool preferSharps) const {
+        int score = 0;
+        
+        for (const auto& note : noteNames) {
+            if (note.find("♯") != string::npos || note.find("#") != string::npos) {
+                score += preferSharps ? 10 : -10;
+            } else if (note.find("♭") != string::npos || note.find("b") != string::npos) {
+                score += preferSharps ? -10 : 10;
+            } else {
+                score += 5; // Natural notes are neutral but slightly preferred
+            }
+        }
+        
+        return score;
+    }
+    
+    /**
+     * @brief Finds all possible consecutive note configurations
+     * Returns the best configuration according to preferSharps
+     */
+    vector<string> findConsecutiveConfiguration(
+        const vector<int>& noteIndices,
+        bool preferSharps) const {
+        
+        if (noteIndices.size() != 7) {
+            return {}; // Only works for 7-note scales
+        }
+        
+        vector<vector<string>> validConfigurations;
+        
+        // Try all 7 possible starting letters for consecutive sequences
+        for (size_t startIdx = 0; startIdx < 7; ++startIdx) {
+            vector<string> candidate;
+            bool isValid = true;
+            
+            // For each position in the scale
+            for (size_t i = 0; i < 7; ++i) {
+                char requiredLetter = noteOrder[(startIdx + i) % 7];
+                int noteIndex = noteIndices[i];
+                
+                // Find an enharmonic equivalent with this letter
+                const auto& possibleNotes = noteArrays[noteIndex];
+                string foundNote = "";
+                
+                for (const auto& note : possibleNotes) {
+                    if (getBasicNoteName(note) == requiredLetter) {
+                        foundNote = note;
+                        break;
+                    }
+                }
+                
+                if (foundNote.empty()) {
+                    isValid = false;
+                    break;
+                }
+                
+                candidate.push_back(foundNote);
+            }
+            
+            if (isValid && areNotesConsecutive(candidate)) {
+                // For diatonic scales, filter out configurations with double accidentals
+                if (!hasDoubleAccidentals(candidate)) {
+                    validConfigurations.push_back(candidate);
+                }
+            }
+        }
+        
+        // If no valid configurations found, return empty
+        if (validConfigurations.empty()) {
+            return {};
+        }
+        
+        // Score all valid configurations and return the best one
+        int bestScore = INT_MIN;
+        vector<string> bestConfig;
+        
+        for (const auto& config : validConfigurations) {
+            int score = scoreConfiguration(config, preferSharps);
+            if (score > bestScore) {
+                bestScore = score;
+                bestConfig = config;
+            }
+        }
+        
+        return bestConfig;
+    }
+    
+    /**
      * @brief Finds alternative enharmonic note with desired basic note
      */
     string findAlternativeWithBasicNote(const string& currentNote, 
@@ -245,40 +349,60 @@ public:
             decimalParts.push_back(decPart);
         }
         
-        // First pass: Get initial note names (using rounded values for microtonal)
-        vector<string> initialNames;
+        // Get note indices (rounded for microtonal)
+        vector<int> noteIndices;
         for (size_t i = 0; i < integerParts.size(); ++i) {
-            // For microtonal: round to nearest semitone
             int noteValue = integerParts[i];
             if (decimalParts[i] > 0.5) {
                 noteValue++;
             }
+            noteIndices.push_back(((noteValue % 12) + 12) % 12);
+        }
+        
+        vector<string> result;
+        
+        // For diatonic 7-note scales, use the enhanced algorithm
+        bool isDiatonic = options.isDiatonicScale && (noteIndices.size() == 7);
+        
+        if (isDiatonic) {
+            // Try to find the best consecutive configuration
+            result = findConsecutiveConfiguration(noteIndices, options.preferSharps);
             
-            int noteIndex = ((noteValue % 12) + 12) % 12; // Ensure positive modulo
-            const auto& possibleNotes = classifiedNotes[noteIndex];
-            
-            // Prefer natural notes
-            auto naturalIt = find_if(possibleNotes.begin(), possibleNotes.end(),
-                [](const ClassifiedNote& cn) { 
-                    return cn.label == AlterationDirection::NATURAL; 
-                });
-            
-            if (naturalIt != possibleNotes.end()) {
-                initialNames.push_back(naturalIt->note);
-            } else if (options.preferSharps) {
-                auto sharpIt = find_if(possibleNotes.begin(), possibleNotes.end(),
+            // If no valid consecutive configuration found, fall back to standard algorithm
+            if (result.empty()) {
+                isDiatonic = false; // Disable diatonic mode for fallback
+            }
+        }
+        
+        // Standard algorithm (non-diatonic or fallback)
+        if (result.empty()) {
+            for (size_t i = 0; i < noteIndices.size(); ++i) {
+                int noteIndex = noteIndices[i];
+                const auto& possibleNotes = classifiedNotes[noteIndex];
+                
+                // Prefer natural notes
+                auto naturalIt = find_if(possibleNotes.begin(), possibleNotes.end(),
                     [](const ClassifiedNote& cn) { 
-                        return cn.label == AlterationDirection::RIGHT; 
+                        return cn.label == AlterationDirection::NATURAL; 
                     });
-                initialNames.push_back(sharpIt != possibleNotes.end() ? 
-                                      sharpIt->note : possibleNotes[0].note);
-            } else {
-                auto flatIt = find_if(possibleNotes.begin(), possibleNotes.end(),
-                    [](const ClassifiedNote& cn) { 
-                        return cn.label == AlterationDirection::LEFT; 
-                    });
-                initialNames.push_back(flatIt != possibleNotes.end() ? 
-                                      flatIt->note : possibleNotes[0].note);
+                
+                if (naturalIt != possibleNotes.end()) {
+                    result.push_back(naturalIt->note);
+                } else if (options.preferSharps) {
+                    auto sharpIt = find_if(possibleNotes.begin(), possibleNotes.end(),
+                        [](const ClassifiedNote& cn) { 
+                            return cn.label == AlterationDirection::RIGHT; 
+                        });
+                    result.push_back(sharpIt != possibleNotes.end() ? 
+                                          sharpIt->note : possibleNotes[0].note);
+                } else {
+                    auto flatIt = find_if(possibleNotes.begin(), possibleNotes.end(),
+                        [](const ClassifiedNote& cn) { 
+                            return cn.label == AlterationDirection::LEFT; 
+                        });
+                    result.push_back(flatIt != possibleNotes.end() ? 
+                                          flatIt->note : possibleNotes[0].note);
+                }
             }
         }
         
@@ -287,8 +411,7 @@ public:
         for (size_t i = 0; i < decimalParts.size(); ++i) {
             if (decimalParts[i] > 0.0) {
                 int cents = static_cast<int>(round(decimalParts[i] * 100.0));
-                // The final note name is already in initialNames (rounded)
-                string finalNoteName = initialNames[i];
+                string finalNoteName = result[i];
                 int finalCents = cents;
                 
                 // If cents > 50, we already rounded up, so adjust cents to be negative
@@ -300,63 +423,6 @@ public:
                                  (finalCents >= 0 ? "+" : "") + 
                                  to_string(finalCents) + " cents";
                 centsInfo.push_back(centsStr);
-            }
-        }
-        
-        // Apply consecutive note logic for diatonic scales
-        vector<string> result = initialNames;
-        
-        bool isDiatonic = options.isDiatonicScale && (integerParts.size() == 7);
-        
-        if (isDiatonic) {
-            int attempts = 0;
-            
-            while (!areNotesConsecutive(result) && attempts < 2) {
-                attempts++;
-                bool modified = false;
-                
-                // Forward pass: fix consecutive notes
-                for (size_t i = 0; i < result.size() - 1; ++i) {
-                    char currentBasic = getBasicNoteName(result[i]);
-                    char nextBasic = getBasicNoteName(result[i + 1]);
-                    char expectedNext = getNextNoteLetter(currentBasic);
-                    
-                    if (nextBasic != expectedNext) {
-                        string alternative = findAlternativeWithBasicNote(
-                            result[i + 1], expectedNext);
-                        
-                        if (!alternative.empty()) {
-                            result[i + 1] = alternative;
-                            modified = true;
-                        }
-                    }
-                }
-                
-                // Try fixing first note if still not consecutive
-                if (!modified && !areNotesConsecutive(result)) {
-                    char secondBasic = getBasicNoteName(result[1]);
-                    auto it = find(noteOrder.begin(), noteOrder.end(), secondBasic);
-                    
-                    if (it != noteOrder.end()) {
-                        size_t idx = distance(noteOrder.begin(), it);
-                        char expectedFirst = noteOrder[(idx + 6) % 7]; // Previous note
-                        
-                        string alternative = findAlternativeWithBasicNote(
-                            result[0], expectedFirst);
-                        
-                        if (!alternative.empty()) {
-                            result[0] = alternative;
-                            modified = true;
-                        }
-                    }
-                }
-                
-                if (!modified) break;
-            }
-            
-            // Fallback to initial names if consecutive couldn't be achieved
-            if (!areNotesConsecutive(result)) {
-                result = initialNames;
             }
         }
         
