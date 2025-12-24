@@ -95,23 +95,24 @@ public:
      * @return New BinaryVector with elements spaced by zeros
      * @details Elements are spaced out by inserting (scalar-1) zeros between each element
      */
-    BinaryVector operator*(int scalar) const {
-        if (scalar <= 0) {
-            throw invalid_argument("Scalar must be positive for multiplication");
-        }
-
-        vector<int> result;
-        result.reserve(data.size() * scalar);
-
-        for (int val : data) {
-            result.emplace_back(val);
-            for (int i = 1; i < scalar; ++i) {
-                result.emplace_back(0);
-            }
-        }
-
-        return BinaryVector(result, offset, mod * scalar);
+    BinaryVector operator*(int scalar) const { // v: vettore in ingresso, k: scalare positivo
+    if (scalar <= 0) {
+        throw invalid_argument("scalar must be positive"); // controllo che k sia positivo
     }
+    
+    int n = data.size(); // lunghezza del vettore in ingresso
+    vector<int> out(scalar * n, 0); // inizializzo un vettore di zeri lungo kn
+    
+    for (int i = 0; i < scalar * n; i++) { // per ogni intero da 0 a kn
+        if ((i + 1) % scalar == 1) { // se l'indice successivo è congruente a 1 modulo k
+            int index = i / scalar; // inizializzo l'indice di selezione a i/k
+            out[i] = data[index]; // metto alla i-esima posizione del vettore in uscita l'elemento alla i/k-esima posizione del vettore in ingresso
+        }
+    }
+    
+    return BinaryVector(out, offset, mod); // restituisco il vettore 'moltiplicato'
+}
+
 
  /**
  * @brief Divide (compress spacing) the pattern by a scalar
@@ -119,10 +120,43 @@ public:
  * @return New BinaryVector with spacing between pulses compressed
  * @details Compresses the spaces between 1s by removing zeros proportionally.
  * For each gap between pulses, keeps only 1/divisor of the zeros (rounded down).
- * Result is padded with zeros to maintain original length and modulo.
  * This is the inverse operation of multiplication.
  */
-BinaryVector operator/(int divisor) const {
+BinaryVector operator/(int scalar) const { // v: vettore in ingresso, k: scalare positivo
+    int n = data.size(); // lunghezza del vettore in ingresso
+
+    if (scalar <= 0) {
+        throw invalid_argument("k must be positive"); // controllo che k sia positivo
+    }
+    
+    if (scalar > n) {
+        throw invalid_argument("k must be less than or equal to vector size"); // controllo che k sia minore o uguale a n
+    }
+    
+    
+    if (n % scalar != 0) {
+        throw invalid_argument("Vector size must be divisible by k"); // controllo che n sia divisibile per k
+    }
+    
+    vector<int> out(n / scalar); // inizializzo un vettore di zeri lungo n/k
+    for (int i = 0; i < n / scalar; i++) { // per ogni intero da 0 a n/k
+        int index = i * scalar; // inizializzo l'indice di selezione a ik
+        out[i] = data[index]; // metto alla i-esima posizione del vettore in uscita l'elemento alla ik-esima posizione del vettore in ingresso
+    }
+    return BinaryVector(out, offset, mod); // restituisco il vettore 'diviso'
+}
+
+    BinaryVector& operator*=(int scalar) {
+        *this = *this * scalar;
+        return *this;
+    }
+
+    BinaryVector& operator/=(int divisor) {
+        *this = *this / divisor;
+        return *this;
+    }
+// old, deprecated
+BinaryVector divide(int divisor) const {
     if (divisor <= 0) {
         throw invalid_argument("Divisor must be positive");
     }
@@ -167,16 +201,27 @@ BinaryVector operator/(int divisor) const {
     
     return BinaryVector(compressed, offset, mod);
 }
-    BinaryVector& operator*=(int scalar) {
-        *this = *this * scalar;
-        return *this;
-    }
 
-    BinaryVector& operator/=(int divisor) {
-        *this = *this / divisor;
-        return *this;
-    }
 
+    // deprecated
+    BinaryVector stretch(int scalar) const {
+        if (scalar <= 0) {
+            throw invalid_argument("Scalar must be positive for multiplication");
+        }
+
+        vector<int> result;
+        result.reserve(data.size() * scalar);
+
+        for (int val : data) {
+            result.emplace_back(val);
+            for (int i = 1; i < scalar; ++i) {
+                result.emplace_back(0);
+            }
+        }
+
+        return BinaryVector(result, offset, mod * scalar);
+    }
+    
     // ==================== COMPONENTWISE LOGICAL OPERATIONS ====================
 
     /**
