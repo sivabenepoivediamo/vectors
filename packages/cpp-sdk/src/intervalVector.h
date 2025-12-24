@@ -574,6 +574,41 @@ public:
         }
         return IntervalVector(out, offset, mod);
     }
+    /**
+ * @brief Rotates the vector and translates the offset based on the interval content
+ * 
+ * @param r rotation amount (positive for forward, negative for backward)
+ * @param n length (0 = use current size, negative values are converted to positive)
+ * @return new IntervalVector with rotated elements and adjusted offset
+ * 
+ */
+ 
+IntervalVector rotoTranslate(int r, int n = 0) const {
+    n = abs(n);
+    if (n == 0) n = static_cast<int>(data.size());
+    
+    vector<int> out(n);
+    for (int i = 0; i < n; i++) {
+        out[i] = element(r + i);
+    }
+    
+    int sum = 0;
+    int dataSize = static_cast<int>(data.size());
+    
+    if (r >= 0) {
+        for (int i = 0; i < r; i++) {
+            sum += element(i);
+        }
+    } else {
+        for (int i = 0; i < -r; i++) {
+            sum -= element(dataSize - 1 - i);
+        }
+    }
+    
+    int newOffset = offset + sum;
+    return IntervalVector(out, newOffset, mod);
+}
+
 
     /**
      * @brief Reverses the order of elements (retrograde)
@@ -1216,5 +1251,6 @@ public:
         cout << "Size: " << data.size() << endl;
     }
 };
+
 
 #endif // INTERVALVECTOR_H
