@@ -27,7 +27,7 @@ int main() {
     // Create ChordParams
     ChordParams params;
     params.withShift(degreesShift)
-          .withRotationOrRototrans(rot)
+          .withPosition(rot)
           .withPreVoices(voices);
 
     // Using Chord class - Position source, position criterion
@@ -53,7 +53,7 @@ int main() {
     // Example with inversion
     ChordParams invertedParams;
     invertedParams.withShift(0)
-                  .withRotationOrRototrans(0)
+                  .withPosition(0)
                   .withPreVoices(3)
                   .withInvert(true)
                   .withAxis(6);
