@@ -574,18 +574,23 @@ public:
         }
         return IntervalVector(out, offset, mod);
     }
+
     /**
- * @brief Rotates the vector and translates the offset based on the interval content
- * 
- * @param r rotation amount (positive for forward, negative for backward)
- * @param n length (0 = use current size, negative values are converted to positive)
- * @return new IntervalVector with rotated elements and adjusted offset
- * 
- */
- 
+     * @brief Rototranslation: rotation combined with offset adjustment
+     * 
+     * @param r Rotation amount
+     * @param n Result length (0 = use current size)
+     * @return New IntervalVector with rotated elements and adjusted offset
+     * 
+     * @details Extracts n elements starting from index r with cyclic access.
+     *          Adjusts the offset by summing the intervals that are skipped
+     *          during the rotation. 
+     */ 
+
 IntervalVector rotoTranslate(int r, int n = 0) const {
     n = abs(n);
-    if (n == 0) n = static_cast<int>(data.size());
+    int dataSize = static_cast<int>(data.size());
+    if (n == 0) n = dataSize;
     
     vector<int> out(n);
     for (int i = 0; i < n; i++) {
@@ -593,22 +598,38 @@ IntervalVector rotoTranslate(int r, int n = 0) const {
     }
     
     int sum = 0;
-    int dataSize = static_cast<int>(data.size());
     
-    if (r >= 0) {
-        for (int i = 0; i < r; i++) {
-            sum += element(i);
+    if (abs(r) < dataSize) {
+
+        if (r >= 0) {
+            for (int i = 0; i < r; i++) {
+                sum += element(i);
+            }
+        } else {
+            for (int i = 0; i < -r; i++) {
+                sum -= element(dataSize - 1 - i);
+            }
         }
     } else {
-        for (int i = 0; i < -r; i++) {
-            sum -= element(dataSize - 1 - i);
+
+        DivisionResult div = euclideanDivision(r, dataSize);
+        
+        if (r >= 0) {
+            for (int i = 0; i < dataSize; i++) {
+                int mult = (i < div.remainder) ? (div.quotient + 1) : div.quotient;
+                sum += element(i) * mult;
+            }
+        } else {
+            int thresh = dataSize + div.remainder; 
+            for (int i = 0; i < dataSize; i++) {
+                int mult = (i >= thresh) ? (div.quotient - 1) : div.quotient;
+                sum += element(i) * mult;
+            }
         }
     }
     
-    int newOffset = offset + sum;
-    return IntervalVector(out, newOffset, mod);
+    return IntervalVector(out, offset + sum, mod);
 }
-
 
     /**
      * @brief Reverses the order of elements (retrograde)
@@ -1251,6 +1272,5 @@ IntervalVector rotoTranslate(int r, int n = 0) const {
         cout << "Size: " << data.size() << endl;
     }
 };
-
 
 #endif // INTERVALVECTOR_H
