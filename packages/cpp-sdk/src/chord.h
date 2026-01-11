@@ -123,8 +123,8 @@ private:
     void generateIntPos() {
         PositionVector tempScalePos = intervalsToPositions(scaleIntervals);
         PositionVector offsetDegrees = criterionPositions + params.shift;
-        PositionVector tempResult = select(tempScalePos, offsetDegrees, params.rotationOrRototrans, params.preVoices);
-        resultIntervals = positionsToIntervals(tempResult.rotoTranslate(params.position));
+        IntervalVector tempResult = select(scaleIntervals, offsetDegrees, params.rotationOrRototrans, params.preVoices);
+        resultIntervals = tempResult.rotoTranslate(params.position);
         if (params.invert) {
             resultIntervals = resultIntervals.inversion(params.axis);
         }
@@ -135,12 +135,11 @@ private:
     }
 
     void generateIntInt() {
-        PositionVector tempScalePos = intervalsToPositions(scaleIntervals);
         IntervalVector offsetIntervals = criterionIntervals;
         int off = criterionIntervals.getOffset();
         offsetIntervals.setOffset(params.shift + off);
-        PositionVector tempResult = select(tempScalePos, offsetIntervals, params.rotationOrRototrans, params.preVoices);
-        resultIntervals = positionsToIntervals(tempResult.rotoTranslate(params.position));
+        IntervalVector tempResult = select(scaleIntervals, offsetIntervals, params.rotationOrRototrans, params.preVoices);
+        resultIntervals = tempResult.rotoTranslate(params.position);
         if (params.invert) {
             resultIntervals = resultIntervals.inversion(params.axis);
         }
@@ -385,8 +384,9 @@ IntervalVector chord(IntervalVector& scale, PositionVector& degrees, int shift =
     //IntervalVector result = positionsToIntervals(resultPositions.rotoTranslate(position));
     result = (invert) ? result.inversion(axis) : result;
     result = (mirror) ? result.singleMirror(mirrorPos, true) : result;
-    PositionVector out = intervalsToPositions(result).rotoTranslate(position);
-    result = positionsToIntervals(out);
+    result = result.rotoTranslate(position);
+    //PositionVector out = intervalsToPositions(result).rotoTranslate(position);
+    //result = positionsToIntervals(out);
     return result;
 };
 
@@ -413,8 +413,9 @@ IntervalVector chord(IntervalVector& scale, IntervalVector& intervals, int shift
     //IntervalVector result = positionsToIntervals(resultPos.rotoTranslate(position));
     result = (invert) ? result.inversion(axis) : result;
     result = (mirror) ? result.singleMirror(mirrorPos, true) : result;
-    PositionVector out = intervalsToPositions(result).rotoTranslate(position);
-    result = positionsToIntervals(out);
+   // PositionVector out = intervalsToPositions(result).rotoTranslate(position);
+   // result = positionsToIntervals(out);
+    result = result.rotoTranslate(position);
     return result;
 };
 #endif // CHORD_H
