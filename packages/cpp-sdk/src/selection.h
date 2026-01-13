@@ -197,7 +197,6 @@
     IntervalVector select(const IntervalVector& source,
                          const PositionVector& criterion,
                          int criterionRotation = 0, int voices = 0) {
-        // Apply rototranslation if needed
         vector<int> sourceData = source.getData();
         int off = source.getOffset();
         int criterionModulo = static_cast<int>(sourceData.size());
@@ -211,23 +210,22 @@
             return IntervalVector({}, source.getOffset(), source.getMod());
         }
 
-        // Determine output length
+
         int outLength = (voices > 0) ? voices : static_cast<int>(rotatedCriterion.size());
         vector<int> result(outLength);
         int n = static_cast<int>(source.size());
         
-        // Use cyclic access for both vectors
+
         for (int k = 0; k < outLength; ++k) {
             int p_k = rotatedCriterion[k];
             int p_next = rotatedCriterion[k + 1];
             
-            // Calculate span δ_k between consecutive positions
+
             int delta_k = p_next - p_k;
             if (delta_k <= 0) {
-                delta_k += n;  // Handle wraparound
+                delta_k += n; 
             }
             
-            // Sum intervals using cyclic access
             int sum = 0;
             for (int j = 0; j < delta_k; ++j) {
                 sum += source[p_k + j];
@@ -236,8 +234,16 @@
             result[k] = sum;
         }
         int sOut = off;
+        if (criterion[0] >= 0) {
         for (int j = 0; j < criterion[0]; ++j) {
             sOut += source[j];
+        }   
+        }
+        else {
+
+            for (int j = criterion[0]; j < 0; ++j) {
+                sOut -= source[j];
+            }
         }
         return IntervalVector(result, sOut, source.getMod());
     }
